@@ -68,6 +68,36 @@ npm run build
 npm start
 ```
 
+## Deploy
+
+Esta aplicación está configurada para desplegarse automáticamente en GitHub Pages en:
+**https://vientonorte.github.io/aruma**
+
+### Despliegue Automático
+
+Cada push a la rama `main` activa automáticamente el workflow de GitHub Actions que:
+1. Instala las dependencias
+2. Construye la aplicación como sitio estático
+3. Despliega a GitHub Pages
+
+### Build Local
+
+Para generar el build estático localmente:
+
+```bash
+npm run build
+```
+
+El contenido se genera en el directorio `out/`.
+
+### Nota sobre API Routes
+
+⚠️ **Importante**: GitHub Pages es un hosting estático, por lo que las API Routes de Next.js (como `/api/calendar`) no funcionarán en producción. Para habilitar la funcionalidad de booking:
+
+1. Despliega las API routes en un servicio serverless (Vercel, Netlify Functions, AWS Lambda)
+2. Usa un servicio de formularios de terceros (Formspree, Form Submit, etc.)
+3. Actualiza el `BookingForm` con el prop `onSubmit` apuntando a tu backend
+
 ## Lint
 
 ```bash
