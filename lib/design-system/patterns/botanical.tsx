@@ -5,7 +5,9 @@
  * Used for brand identity and visual interest
  */
 
-import React from 'react';
+'use client';
+
+import React, { useMemo } from 'react';
 
 export type BotanicalPatternProps = {
   variant?: 'leaf' | 'branch' | 'scatter' | 'geometric';
@@ -86,24 +88,34 @@ export function BotanicalBackground({
   variant = 'scatter',
   density = 'medium',
   className = '',
+  seed = 0,
 }: {
   variant?: BotanicalPatternProps['variant'];
   density?: 'low' | 'medium' | 'high';
   className?: string;
+  seed?: number;
 }) {
-  const counts = {
-    low: 3,
-    medium: 6,
-    high: 12,
-  };
+  // Use useMemo to make positions stable based on seed
+  const positions = useMemo(() => {
+    const densityCounts = {
+      low: 3,
+      medium: 6,
+      high: 12,
+    };
+    const count = densityCounts[density];
+    // Simple seeded random number generator for stable positions
+    const seededRandom = (index: number) => {
+      const x = Math.sin(seed * 12.9898 + index * 78.233) * 43758.5453;
+      return x - Math.floor(x);
+    };
 
-  const count = counts[density];
-  const positions = Array.from({ length: count }, (_, i) => ({
-    top: `${Math.random() * 100}%`,
-    left: `${Math.random() * 100}%`,
-    rotation: Math.random() * 360,
-    scale: 0.5 + Math.random() * 0.5,
-  }));
+    return Array.from({ length: count }, (_, i) => ({
+      top: `${seededRandom(i) * 100}%`,
+      left: `${seededRandom(i + 100) * 100}%`,
+      rotation: seededRandom(i + 200) * 360,
+      scale: 0.5 + seededRandom(i + 300) * 0.5,
+    }));
+  }, [density, seed]);
 
   return (
     <div className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`} aria-hidden="true">

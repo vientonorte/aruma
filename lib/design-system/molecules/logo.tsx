@@ -68,7 +68,7 @@ export function Logo({ variant = 'full', size = 'md', showSubtitle = false, clas
       </Heading>
       {showSubtitle && (
         <p className={`mt-2 ${styles.subtitle} text-[#86868B]`}>
-          'RIGGER / TANTRA' • Fotografía y Espacio Seguro
+          &apos;RIGGER / TANTRA&apos; • Fotografía y Espacio Seguro
         </p>
       )}
     </div>

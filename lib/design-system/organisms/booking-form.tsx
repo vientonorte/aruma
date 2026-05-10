@@ -100,7 +100,7 @@ export function BookingForm({ onSubmit, variant = 'default' }: BookingFormProps)
           setStatus({ type: 'success', message: 'Reserva enviada de forma segura.' });
         }
       }
-    } catch (error) {
+    } catch {
       setStatus({ type: 'error', message: 'Error al procesar la solicitud.' });
     } finally {
       setIsLoading(false);

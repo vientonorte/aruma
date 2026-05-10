@@ -3,10 +3,11 @@
  * Demonstrates all components from the ARUMA design system
  */
 
+'use client';
+
 import {
   Button,
   Input,
-  Textarea,
   Badge,
   Card,
   Heading,
@@ -23,7 +24,6 @@ import {
   Hero,
   BentoGrid,
   BotanicalPattern,
-  BotanicalBackground,
 } from '@/lib/design-system';
 
 export default function DesignSystemPage() {
