@@ -12,6 +12,11 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  output: "export",
+  basePath: "/aruma",
+  images: {
+    unoptimized: true,
+  },
   async headers() {
     return [
       {
