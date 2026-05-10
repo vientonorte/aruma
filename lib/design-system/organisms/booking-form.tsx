@@ -58,10 +58,11 @@ export function BookingForm({ onSubmit, variant = 'default' }: BookingFormProps)
     setStatus(null);
     setIsLoading(true);
 
+    // Sanitize and normalize email (apply toLowerCase after sanitization for consistency)
     const safeForm = {
       consent: form.consent,
       name: sanitizeInput(form.name),
-      email: sanitizeInput(form.email.toLowerCase()),
+      email: sanitizeInput(form.email).toLowerCase(),
       notes: sanitizeInput(form.notes),
       date: form.date,
     };

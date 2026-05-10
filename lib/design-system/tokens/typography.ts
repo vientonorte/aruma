@@ -125,7 +125,7 @@ export const typography = {
       fontSize: '1.25rem',
       fontWeight: '600',
       lineHeight: '1.5',
-      letterSpacing: 'normal',
+      letterSpacing: '0',
     },
 
     // Body styles
@@ -133,19 +133,19 @@ export const typography = {
       fontSize: '1.125rem',
       fontWeight: '400',
       lineHeight: '1.625',
-      letterSpacing: 'normal',
+      letterSpacing: '0',
     },
     body: {
       fontSize: '1rem',
       fontWeight: '400',
       lineHeight: '1.5',
-      letterSpacing: 'normal',
+      letterSpacing: '0',
     },
     bodySmall: {
       fontSize: '0.875rem',
       fontWeight: '400',
       lineHeight: '1.5',
-      letterSpacing: 'normal',
+      letterSpacing: '0',
     },
 
     // Label styles
@@ -167,7 +167,7 @@ export const typography = {
       fontSize: '0.75rem',
       fontWeight: '400',
       lineHeight: '1.5',
-      letterSpacing: 'normal',
+      letterSpacing: '0',
     },
     overline: {
       fontSize: '0.75rem',
