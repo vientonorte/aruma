@@ -22,7 +22,7 @@ export function FooterMonoLine({
       role="contentinfo"
     >
       <p 
-        className="text-center text-xs text-neutral-500 tracking-[0.3em] uppercase font-semibold"
+        className="text-center text-xs text-neutral-500 uppercase font-semibold"
         style={{ letterSpacing: typography.letterSpacing.brand }}
       >
         {text}
