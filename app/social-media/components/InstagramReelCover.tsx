@@ -30,6 +30,7 @@ export function InstagramReelCover({
         {/* Background */}
         <div className="absolute inset-0">
           {thumbnail ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
             <img 
               src={thumbnail} 
               alt="Reel background" 

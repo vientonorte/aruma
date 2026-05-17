@@ -5,7 +5,6 @@
  */
 
 import React from 'react';
-import { colors } from '@/lib/design-system/tokens/colors';
 
 interface IconCircleProps {
   icon: React.ReactNode;

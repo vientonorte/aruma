@@ -7,7 +7,6 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { typography } from '@/lib/design-system/tokens/typography';
-import { NumberTag } from './NumberTag';
 
 interface CarouselSlide {
   title: string;
@@ -55,6 +54,7 @@ export function InstagramCarousel({
         {/* Slide Content */}
         <div className="absolute inset-0 bg-gradient-to-br from-botanical-900 via-neutral-900 to-black flex flex-col items-center justify-center p-8">
           {currentContent.imageUrl ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
             <img 
               src={currentContent.imageUrl} 
               alt={currentContent.title} 

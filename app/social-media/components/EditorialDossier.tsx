@@ -86,7 +86,7 @@ export function EditorialDossier({
           {/* Footer Quote */}
           <div className="text-center mt-12">
             <blockquote className="text-neutral-400 italic text-lg">
-              "Transform your space, transform your life"
+              &ldquo;Transform your space, transform your life&rdquo;
             </blockquote>
             <p 
               className="text-botanical-500 text-sm mt-4 font-semibold uppercase"

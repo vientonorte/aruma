@@ -4,10 +4,9 @@
  * 9:16 vertical story format (1080x1920px)
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { typography } from '@/lib/design-system/tokens/typography';
 import { StarDivider } from './StarDivider';
-import { FooterMonoLine } from './FooterMonoLine';
 
 interface InstagramStoryProps {
   title?: string;
@@ -46,6 +45,7 @@ export function InstagramStory({
           <div className="flex-1 flex flex-col items-center justify-center gap-6 text-center">
             {logoUrl && (
               <div className="w-24 h-24 rounded-full overflow-hidden bg-neutral-800 flex items-center justify-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={logoUrl} alt="Logo" className="w-full h-full object-cover" />
               </div>
             )}

@@ -60,6 +60,7 @@ export function PanoramicTriptych({
           >
             {/* Background */}
             {panel.imageUrl ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img 
                 src={panel.imageUrl} 
                 alt={panel.title}

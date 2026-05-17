@@ -45,6 +45,7 @@ export function InstagramFeedPost({
         style={{ aspectRatio: '1/1' }}
       >
         {imageUrl ? (
+          /* eslint-disable-next-line @next/next/no-img-element */
           <img 
             src={imageUrl} 
             alt="Feed post" 
