@@ -10,7 +10,7 @@
 import React from 'react';
 import { m, type HTMLMotionProps } from 'framer-motion';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'botanical';
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'botanical' | 'brand' | 'brandOutline';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 export interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'size'> {
@@ -27,6 +27,12 @@ const variantStyles: Record<ButtonVariant, string> = {
   secondary: 'bg-[#3D9461] text-white hover:bg-[#5DAF7D] disabled:bg-[#8BCAA0] disabled:text-[#1C1C1E]',
   ghost: 'bg-transparent text-[#F5F5F7] border border-[#2F2F31] hover:border-[#3A3A3C] hover:bg-[rgba(245,245,247,0.1)] disabled:border-[#1C1C1E] disabled:text-[#48484A]',
   botanical: 'bg-gradient-to-r from-[#3D9461] to-[#2D764B] text-white hover:from-[#5DAF7D] hover:to-[#3D9461] disabled:from-[#8BCAA0] disabled:to-[#B8DFC3] disabled:text-[#1C1C1E]',
+  // Identidad ARUMA (lámina de marca): píldora negra con borde acento cálido.
+  brand:
+    'bg-black text-white uppercase tracking-[0.18em] border-2 border-[#F5F0E8] shadow-[0_0_0_1px_#000000] hover:bg-[#1A1A1A] disabled:opacity-50',
+  // Identidad ARUMA: píldora clara delineada en negro.
+  brandOutline:
+    'bg-white text-black uppercase tracking-[0.18em] border-2 border-black hover:bg-[#F5F0E8] disabled:opacity-50',
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
