@@ -43,16 +43,21 @@ npm install
 npm run dev
 ```
 
-## Variables de entorno (servidor)
+## Conexión con Google Calendar
 
-Define en `.env.local`:
+Las reservas se crean directamente en el Google Calendar del estudio
+mediante una **Service Account** (sin pantallas de login). La
+disponibilidad se calcula cruzando el horario de atención con FreeBusy.
 
-```bash
-GOOGLE_CALENDAR_API_BASE_URL=https://www.googleapis.com/calendar/v3/calendars/<calendar-id>
-GOOGLE_CALENDAR_API_KEY=<server-side-token>
-```
+- Guía de configuración paso a paso: [`docs/CONFIGURACION_GOOGLE.md`](docs/CONFIGURACION_GOOGLE.md)
+- Variables de entorno: ver [`.env.example`](.env.example) (copiar a `.env.local` en desarrollo)
+- Endpoints: `GET /api/availability` (franjas libres) y `POST /api/calendar` (crear reserva)
 
-Las credenciales se usan exclusivamente en `app/api/calendar/route.ts` (API Route), nunca en cliente.
+Las credenciales se usan exclusivamente en las API Routes del servidor, nunca en cliente.
+
+> **Hosting:** el sitio requiere un hosting con soporte de servidor
+> (recomendado: Vercel). GitHub Pages solo puede servir la parte
+> estática; el flujo de reservas no funciona ahí.
 
 ## Seguridad aplicada
 
