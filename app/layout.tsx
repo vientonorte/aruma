@@ -83,9 +83,8 @@ export default function RootLayout({
             {
               title: "Legal",
               items: [
-                // TODO: add dedicated /privacidad and /terminos pages
-                { label: "Política de privacidad", href: "#" },
-                { label: "Términos de uso", href: "#" },
+                { label: "Política de privacidad", href: "/privacidad" },
+                { label: "Términos de uso", href: "/terminos" },
               ],
             },
           ]}

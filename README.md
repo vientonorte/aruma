@@ -61,19 +61,21 @@ Lámina de identidad viva: logotipo vectorial, paleta, tokens y
 componentes de marca, con un editor para que el dueño ajuste colores y
 textos desde el navegador.
 
-## Seguridad aplicada
+## Seguridad y privacidad
 
-- Validación con Zod en cliente y servidor.
-- Sanitización básica anti-XSS de entradas de reserva.
-- Consentimiento legal explícito (GDPR/LOPD) antes de habilitar datos de contacto.
-- Headers de seguridad: CSP, HSTS, X-Content-Type-Options, X-Frame-Options.
+- Sitio 100 % estático: no recopila datos personales ni usa cookies de seguimiento.
+- Las reservas y sus datos se gestionan en Google Calendar; el sitio no
+  procesa formularios propios.
+- Páginas legales dedicadas: `/privacidad` y `/terminos`.
 
 ## Build
 
 ```bash
 npm run build
-npm start
 ```
+
+Genera el sitio estático en `out/` (configurado con `output: "export"` y
+`basePath: "/aruma"` para GitHub Pages).
 
 ## Lint
 
@@ -86,18 +88,20 @@ npm run lint
 ```
 aruma/
 ├── app/                      # Next.js App Router
+│   ├── brand/               # Lámina de identidad viva
 │   ├── design-system/       # Design system showcase
-│   ├── api/                 # API routes
+│   ├── privacidad/          # Política de privacidad
+│   ├── terminos/            # Términos de uso
+│   ├── social-media/        # Plantillas para redes sociales
 │   └── page.tsx             # Home page
 ├── lib/                     # Utilities y Design System
-│   ├── design-system/       # Sistema de diseño completo
-│   │   ├── tokens/          # Design tokens
-│   │   ├── atoms/           # Componentes atómicos
-│   │   ├── molecules/       # Componentes moleculares
-│   │   ├── organisms/       # Componentes organismos
-│   │   └── patterns/        # Patrones decorativos
-│   └── sanitize.ts          # Utilidades de sanitización
-├── components/              # Componentes legacy (migrar a design-system)
+│   ├── brand.config.ts      # Configuración editable de la marca
+│   └── design-system/       # Sistema de diseño completo
+│       ├── tokens/          # Design tokens
+│       ├── atoms/           # Componentes atómicos
+│       ├── molecules/       # Componentes moleculares
+│       ├── organisms/       # Componentes organismos
+│       └── patterns/        # Patrones decorativos
 └── public/                  # Assets públicos
 ```
 
@@ -106,6 +110,5 @@ aruma/
 - **Framework**: Next.js 16 + React 19
 - **Styling**: Tailwind CSS v4
 - **Animation**: Framer Motion
-- **Validation**: Zod
 - **TypeScript**: Full type safety
 - **Design System**: Atomic Design principles
