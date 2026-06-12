@@ -55,15 +55,22 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
         />
+        <a
+          href="#contenido"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-[#F5F0E8] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-black"
+        >
+          Saltar al contenido principal
+        </a>
         <MotionProvider>
         <Header
           navigation={[
             { label: "Servicios", href: "#servicios" },
             { label: "Proceso", href: "#proceso" },
             { label: "Reservar", href: "#reserva" },
+            { label: "Design System →", href: "/brand" },
           ]}
         />
-        <div className="flex-1">{children}</div>
+        <div className="flex-1" id="contenido">{children}</div>
         <Footer
           links={[
             {

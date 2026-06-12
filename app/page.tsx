@@ -25,17 +25,40 @@ export default function Home() {
       {/* Empatizar: Hero con propuesta de valor clara y llamadas a la acción */}
       <Hero
         title="ĀRŪḾA"
-        subtitle="Estudio fotográfico & espacio seguro"
+        subtitle="Espacio para la Exploración Visual"
         description="Reserva tu sesión en un ambiente íntimo diseñado para que te sientas cómoda/o. Fotografía auténtica, en tus términos y con total protección de tus datos."
         variant="botanical"
         primaryAction={{ label: "Reservar ahora", href: "#reserva" }}
         secondaryAction={{ label: "Ver servicios", href: "#servicios" }}
       />
 
-      {/* Definir: Sección de servicios centrada en beneficios del usuario, no en features técnicas */}
+      {/* Franja de confianza: estado del sistema y accesos, al estilo app */}
+      <section aria-label="Calidad del sitio" className="-mt-8">
+        <ul className="flex flex-wrap items-center justify-center gap-2 text-xs text-[#86868B]">
+          <li className="rounded-full border border-[#2F2F31] bg-[#1C1C1E] px-3 py-1.5">
+            ĀRŪḾA v1.0 · <span className="text-[#3D9461]">STABLE</span>
+          </li>
+          <li className="rounded-full border border-[#2F2F31] bg-[#1C1C1E] px-3 py-1.5">
+            WCAG 2.1 AA
+          </li>
+          <li className="rounded-full border border-[#2F2F31] bg-[#1C1C1E] px-3 py-1.5">
+            Reservas en tiempo real
+          </li>
+          <li>
+            <a
+              href="/brand"
+              className="block rounded-full border border-[#F5F0E8]/40 bg-[#1C1C1E] px-3 py-1.5 text-[#F5F0E8] transition-colors hover:border-[#F5F0E8]"
+            >
+              Design System →
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      {/* Definir: Líneas de negocio centradas en beneficios del usuario */}
       <section id="servicios" aria-labelledby="servicios-heading">
         <div className="mb-8 text-center">
-          <Overline>Lo que ofrecemos</Overline>
+          <Overline>Nuestras líneas de negocio</Overline>
           <Heading as="h2" id="servicios-heading" className="mt-2 text-2xl sm:text-3xl">
             Un espacio hecho para ti
           </Heading>
@@ -61,6 +84,14 @@ export default function Home() {
               title: "Entrega en 72 h",
               description: "Galería editada profesionalmente en 72 horas, lista para compartir o imprimir.",
               span: 1,
+            },
+            {
+              icon: <KnotIcon />,
+              title: "Exploración Rigger / Tantra",
+              description:
+                "⭐ Sesión signature — Shibari y exploración corporal guiada en un entorno de respeto y consentimiento absoluto.",
+              span: 4,
+              variant: "botanical",
             },
           ]}
         />
@@ -130,6 +161,15 @@ function CameraIcon() {
     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M12 15.2a3.2 3.2 0 100-6.4 3.2 3.2 0 000 6.4z" />
       <path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15a5 5 0 110-10 5 5 0 010 10z" />
+    </svg>
+  );
+}
+
+function KnotIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <path d="M7 4c4 0 10 3 10 8s-6 8-10 8" strokeLinecap="round" />
+      <path d="M17 4C13 4 7 7 7 12s6 8 10 8" strokeLinecap="round" opacity="0.6" />
     </svg>
   );
 }
