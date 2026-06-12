@@ -11,6 +11,8 @@ export type BrandColorKey = 'negro' | 'blanco' | 'gris' | 'acento';
 export type BrandConfig = {
   name: string;
   tagline: string;
+  /** Página de citas de Google Calendar donde se agendan las sesiones. */
+  bookingUrl: string;
   colors: Record<BrandColorKey, { label: string; value: string }>;
   nav: string[];
   buttons: { primary: string; secondary: string };
@@ -21,6 +23,7 @@ export type BrandConfig = {
 export const brandConfig: BrandConfig = {
   name: 'ARUMA',
   tagline: 'Espacio para la Exploración Visual.',
+  bookingUrl: 'https://calendar.app.google/Gw2Js1fHiAiVwiuS6',
   colors: {
     negro: { label: 'Negro Principal', value: '#000000' },
     blanco: { label: 'Blanco', value: '#FFFFFF' },

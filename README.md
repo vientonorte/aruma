@@ -43,21 +43,23 @@ npm install
 npm run dev
 ```
 
-## Conexión con Google Calendar
+## Reservas con Google Calendar
 
-Las reservas se crean directamente en el Google Calendar del estudio
-mediante una **Service Account** (sin pantallas de login). La
-disponibilidad se calcula cruzando el horario de atención con FreeBusy.
+El sitio es **100 % estático** y se publica en **GitHub Pages**
+(<https://vientonorte.github.io/aruma>). Las reservas se gestionan con la
+**página de citas de Google Calendar** del estudio: el botón "Reservar mi
+sesión" abre la agenda, Google muestra solo los cupos libres, evita
+dobles reservas y envía confirmación y recordatorios al cliente.
 
-- Guía de configuración paso a paso: [`docs/CONFIGURACION_GOOGLE.md`](docs/CONFIGURACION_GOOGLE.md)
-- Variables de entorno: ver [`.env.example`](.env.example) (copiar a `.env.local` en desarrollo)
-- Endpoints: `GET /api/availability` (franjas libres) y `POST /api/calendar` (crear reserva)
+- La URL de la página de citas se administra en `lib/brand.config.ts`
+  (`bookingUrl`) o desde la página `/brand` del sitio.
+- No se requieren credenciales ni variables de servidor.
 
-Las credenciales se usan exclusivamente en las API Routes del servidor, nunca en cliente.
+## Página /brand
 
-> **Hosting:** el sitio requiere un hosting con soporte de servidor
-> (recomendado: Vercel). GitHub Pages solo puede servir la parte
-> estática; el flujo de reservas no funciona ahí.
+Lámina de identidad viva: logotipo vectorial, paleta, tokens y
+componentes de marca, con un editor para que el dueño ajuste colores y
+textos desde el navegador.
 
 ## Seguridad aplicada
 

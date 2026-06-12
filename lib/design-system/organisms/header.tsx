@@ -7,6 +7,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { m } from 'framer-motion';
 import { Logo } from '../molecules/logo';
 
@@ -29,13 +30,13 @@ export function Header({ showSubtitle = false, navigation = [], actions }: Heade
         {navigation.length > 0 && (
           <nav className="hidden md:flex items-center gap-6" role="navigation" aria-label="Navegación principal">
             {navigation.map((item) => (
-              <a
+              <Link
                 key={item.href}
                 href={item.href}
                 className="text-sm font-medium text-[#86868B] transition-colors hover:text-[#F5F5F7] focus-visible:text-[#F5F5F7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5F5F7] rounded px-2 py-1"
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
           </nav>
         )}

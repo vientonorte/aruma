@@ -1,28 +1,12 @@
 import type { NextConfig } from "next";
 
-const securityHeaders = [
-  { key: "X-Content-Type-Options", value: "nosniff" },
-  { key: "X-Frame-Options", value: "DENY" },
-  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
-  {
-    key: "Content-Security-Policy",
-    // 'unsafe-inline' en script-src es necesario para los scripts inline de
-    // hidratación de Next.js en páginas estáticas (sin él, React no se monta
-    // y el formulario de reserva queda inerte en producción).
-    value: "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
-  },
-];
-
+// Sitio 100 % estático para GitHub Pages (vientonorte.github.io/aruma).
+// No hay servidor: las reservas se gestionan con la página de citas de
+// Google Calendar (ver lib/brand.config.ts → bookingUrl).
 const nextConfig: NextConfig = {
-  async headers() {
-    return [
-      {
-        source: "/(.*)",
-        headers: securityHeaders,
-      },
-    ];
-  },
+  output: "export",
+  basePath: "/aruma",
+  images: { unoptimized: true },
 };
 
 export default nextConfig;
