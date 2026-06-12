@@ -7,6 +7,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { Logo } from '../molecules/logo';
 import { Text, Caption } from '../atoms/typography';
 import { BotanicalPattern } from '../patterns/botanical';
@@ -46,12 +47,12 @@ export function Footer({ links = [], socialLinks = [], copyright }: FooterProps)
               <ul className="space-y-2">
                 {section.items.map((item) => (
                   <li key={item.href}>
-                    <a
+                    <Link
                       href={item.href}
                       className="text-sm text-[#86868B] transition-colors hover:text-[#F5F5F7] focus-visible:text-[#F5F5F7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5F5F7] rounded"
                     >
                       {item.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>

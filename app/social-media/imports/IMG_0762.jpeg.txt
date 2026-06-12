@@ -1,2 +1,0 @@
-This is a placeholder for the ARUMA logo image (IMG_0762.jpeg).
-In a real implementation, this would be an actual JPEG image file.
