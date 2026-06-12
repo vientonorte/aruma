@@ -8,7 +8,7 @@
 'use client';
 
 import React from 'react';
-import { motion, type HTMLMotionProps } from 'framer-motion';
+import { m, type HTMLMotionProps } from 'framer-motion';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'botanical';
 export type ButtonSize = 'sm' | 'md' | 'lg';
@@ -35,6 +35,8 @@ const sizeStyles: Record<ButtonSize, string> = {
   lg: 'h-14 px-6 text-base',
 };
 
+const baseStyles = 'inline-flex items-center justify-center gap-2 rounded-full font-semibold tracking-wide transition-all duration-250 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5F5F7] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0A]';
+
 export function Button({
   variant = 'primary',
   size = 'md',
@@ -46,10 +48,8 @@ export function Button({
   className = '',
   ...props
 }: ButtonProps) {
-  const baseStyles = 'inline-flex items-center justify-center gap-2 rounded-full font-semibold tracking-wide transition-all duration-250 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5F5F7] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0A]';
-
   return (
-    <motion.button
+    <m.button
       className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
       disabled={disabled || isLoading}
       whileHover={!disabled && !isLoading ? { scale: 1.02 } : undefined}
@@ -68,7 +68,34 @@ export function Button({
           {rightIcon && <span aria-hidden="true">{rightIcon}</span>}
         </>
       )}
-    </motion.button>
+    </m.button>
+  );
+}
+
+export interface ButtonLinkProps extends Omit<HTMLMotionProps<'a'>, 'size'> {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  href: string;
+  children: React.ReactNode;
+}
+
+/** Enlace con apariencia de Button, para acciones de navegación/anclaje desde Server Components. */
+export function ButtonLink({
+  variant = 'primary',
+  size = 'md',
+  children,
+  className = '',
+  ...props
+}: ButtonLinkProps) {
+  return (
+    <m.a
+      className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      {...props}
+    >
+      {children}
+    </m.a>
   );
 }
 

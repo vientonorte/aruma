@@ -1,10 +1,42 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Header, Footer } from "@/lib/design-system";
+import { Header, Footer, MotionProvider } from "@/lib/design-system";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://aruma-khuromutups-projects.vercel.app";
+const SITE_DESCRIPTION =
+  "Espacio íntimo y seguro para sesiones fotográficas auténticas. Reserva online en segundos, con total privacidad y protección de tus datos.";
 
 export const metadata: Metadata = {
-  title: "ĀRŪḾA | Reserva tu sesión",
-  description: "Espacio íntimo y seguro para sesiones fotográficas auténticas. Reserva online en segundos, con total privacidad y protección de tus datos.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "ĀRŪḾA | Estudio fotográfico — Reserva tu sesión",
+    template: "%s | ĀRŪḾA",
+  },
+  description: SITE_DESCRIPTION,
+  openGraph: {
+    type: "website",
+    locale: "es_CL",
+    url: "/",
+    siteName: "ĀRŪḾA",
+    title: "ĀRŪḾA | Estudio fotográfico & espacio seguro",
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary",
+    title: "ĀRŪḾA | Estudio fotográfico & espacio seguro",
+    description: SITE_DESCRIPTION,
+  },
+  robots: { index: true, follow: true },
+};
+
+const localBusinessJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: "ĀRŪḾA",
+  description: SITE_DESCRIPTION,
+  url: SITE_URL,
+  address: { "@type": "PostalAddress", addressCountry: "CL" },
+  priceRange: "$$",
 };
 
 export default function RootLayout({
@@ -15,6 +47,11 @@ export default function RootLayout({
   return (
     <html lang="es" className="h-full scroll-smooth antialiased">
       <body className="flex min-h-full flex-col bg-[#0A0A0A] text-[#F5F5F7]">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+        />
+        <MotionProvider>
         <Header
           navigation={[
             { label: "Servicios", href: "#servicios" },
@@ -42,6 +79,7 @@ export default function RootLayout({
             },
           ]}
         />
+        </MotionProvider>
       </body>
     </html>
   );

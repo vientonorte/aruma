@@ -4,7 +4,7 @@
  * Atomic components - the smallest building blocks
  */
 
-export { Button, type ButtonProps, type ButtonVariant, type ButtonSize } from './button';
+export { Button, ButtonLink, type ButtonProps, type ButtonLinkProps, type ButtonVariant, type ButtonSize } from './button';
 export { Input, type InputProps, type InputVariant, type InputSize } from './input';
 export { Textarea, type TextareaProps, type TextareaVariant } from './textarea';
 export { Badge, type BadgeProps, type BadgeVariant, type BadgeSize } from './badge';

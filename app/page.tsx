@@ -1,10 +1,4 @@
-'use client';
-
 import { Hero, BentoGrid, BookingForm, Card, Heading, Text, Overline } from "@/lib/design-system";
-
-function scrollTo(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-}
 
 const PROCESS_STEPS = [
   {
@@ -34,8 +28,8 @@ export default function Home() {
         subtitle="Estudio fotográfico & espacio seguro"
         description="Reserva tu sesión en un ambiente íntimo diseñado para que te sientas cómoda/o. Fotografía auténtica, en tus términos y con total protección de tus datos."
         variant="botanical"
-        primaryAction={{ label: "Reservar ahora", onClick: () => scrollTo('reserva') }}
-        secondaryAction={{ label: "Ver servicios", onClick: () => scrollTo('servicios') }}
+        primaryAction={{ label: "Reservar ahora", href: "#reserva" }}
+        secondaryAction={{ label: "Ver servicios", href: "#servicios" }}
       />
 
       {/* Definir: Sección de servicios centrada en beneficios del usuario, no en features técnicas */}

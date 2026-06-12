@@ -21,3 +21,6 @@ export * from './organisms';
 
 // Patterns - Decorative and branded elements
 export { BotanicalPattern, BotanicalBackground, type BotanicalPatternProps } from './patterns/botanical';
+
+// Providers
+export { MotionProvider } from './motion-provider';

@@ -13,7 +13,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { Label } from '../atoms/typography';
 
 type DaySummary = { date: string; available: number };
@@ -210,7 +210,7 @@ export function SlotPicker({ value, onChange, disabled = false, error, maxDays =
           )}
 
           {slotsState === 'ready' && slots.length > 0 && (
-            <motion.div
+            <m.div
               role="radiogroup"
               aria-label="Elige una hora"
               className="flex flex-wrap gap-2"
@@ -235,7 +235,7 @@ export function SlotPicker({ value, onChange, disabled = false, error, maxDays =
                   </button>
                 );
               })}
-            </motion.div>
+            </m.div>
           )}
         </>
       )}
