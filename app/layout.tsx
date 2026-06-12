@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
+
+// Fuente secundaria oficial de la marca (lámina de identidad ARUMA).
+const inter = Inter({ subsets: ["latin"], display: "swap" });
 import { Header, Footer, MotionProvider } from "@/lib/design-system";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://aruma-khuromutups-projects.vercel.app";
@@ -46,7 +50,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className="h-full scroll-smooth antialiased">
-      <body className="flex min-h-full flex-col bg-[#0A0A0A] text-[#F5F5F7]">
+      <body className={`${inter.className} flex min-h-full flex-col bg-[#0A0A0A] text-[#F5F5F7]`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}

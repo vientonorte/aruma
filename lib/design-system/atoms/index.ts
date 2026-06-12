@@ -10,3 +10,4 @@ export { Textarea, type TextareaProps, type TextareaVariant } from './textarea';
 export { Badge, type BadgeProps, type BadgeVariant, type BadgeSize } from './badge';
 export { Card, type CardProps, type CardVariant } from './card';
 export { Heading, Text, Label, Caption, Overline } from './typography';
+export { ArumaWordmark, ArumaGlyph, ARUMA_GLYPHS, type ArumaWordmarkProps, type WordmarkVariant } from './wordmark';

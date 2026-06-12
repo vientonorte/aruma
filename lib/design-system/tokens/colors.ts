@@ -16,6 +16,9 @@ export const colors = {
     black: '#000000',
     white: '#FFFFFF',
     offWhite: '#F5F5F7',
+    // Lámina de identidad ARUMA (02. Color Palette)
+    grayText: '#333333',
+    cream: '#F5F0E8',
     botanical: {
       50: '#F0F9F4',
       100: '#DCEFE1',
