@@ -6,7 +6,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 import { Header, Footer, MotionProvider } from "@/lib/design-system";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://aruma-khuromutups-projects.vercel.app";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://vientonorte.github.io/aruma";
 const SITE_DESCRIPTION =
   "Espacio íntimo y seguro para sesiones fotográficas auténticas. Reserva online en segundos, con total privacidad y protección de tus datos.";
 

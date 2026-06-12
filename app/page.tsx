@@ -1,4 +1,6 @@
-import { Hero, BentoGrid, BookingForm, Card, Heading, Text, Overline } from "@/lib/design-system";
+import Link from "next/link";
+import { Hero, BentoGrid, ButtonLink, Card, Heading, Text, Overline } from "@/lib/design-system";
+import { brandConfig } from "@/lib/brand.config";
 
 const PROCESS_STEPS = [
   {
@@ -45,12 +47,12 @@ export default function Home() {
             Reservas en tiempo real
           </li>
           <li>
-            <a
+            <Link
               href="/brand"
               className="block rounded-full border border-[#F5F0E8]/40 bg-[#1C1C1E] px-3 py-1.5 text-[#F5F0E8] transition-colors hover:border-[#F5F0E8]"
             >
               Design System →
-            </a>
+            </Link>
           </li>
         </ul>
       </section>
@@ -130,7 +132,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Validar: Formulario de reserva accesible y con consentimiento explícito */}
+      {/* Validar: Reserva directa en la agenda de Google del estudio */}
       <section id="reserva" aria-labelledby="reserva-heading">
         <div className="mb-8 text-center">
           <Overline>Da el primer paso</Overline>
@@ -141,7 +143,29 @@ export default function Home() {
             Proceso seguro y confidencial. Tus datos solo se usan para gestionar tu reserva.
           </Text>
         </div>
-        <BookingForm variant="botanical" />
+        <Card variant="botanical" className="mx-auto max-w-xl text-center">
+          <Heading as="h3" className="text-xl">
+            Agenda directamente en nuestro calendario
+          </Heading>
+          <Text size="sm" muted className="mx-auto mt-3 max-w-md">
+            Elige el horario que te acomode entre los cupos realmente disponibles. Recibirás la
+            confirmación y los recordatorios automáticos en tu correo.
+          </Text>
+          <div className="mt-6 flex justify-center">
+            <ButtonLink
+              variant="botanical"
+              size="lg"
+              href={brandConfig.bookingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Reservar mi sesión
+            </ButtonLink>
+          </div>
+          <Text size="sm" muted className="mt-4">
+            Se abre la agenda segura de Google Calendar en una pestaña nueva.
+          </Text>
+        </Card>
       </section>
 
     </main>
