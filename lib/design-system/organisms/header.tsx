@@ -7,7 +7,7 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { Logo } from '../molecules/logo';
 
 export interface HeaderProps {
@@ -18,7 +18,7 @@ export interface HeaderProps {
 
 export function Header({ showSubtitle = false, navigation = [], actions }: HeaderProps) {
   return (
-    <motion.header
+    <m.header
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       className="sticky top-0 z-50 border-b border-[#2F2F31] bg-[#0A0A0A]/95 backdrop-blur-sm"
@@ -42,6 +42,6 @@ export function Header({ showSubtitle = false, navigation = [], actions }: Heade
 
         {actions && <div className="flex items-center gap-3">{actions}</div>}
       </div>
-    </motion.header>
+    </m.header>
   );
 }

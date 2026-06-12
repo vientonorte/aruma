@@ -7,7 +7,7 @@
 'use client';
 
 import React from 'react';
-import { motion, type HTMLMotionProps } from 'framer-motion';
+import { m, type HTMLMotionProps } from 'framer-motion';
 
 export type CardVariant = 'default' | 'elevated' | 'outlined' | 'botanical';
 
@@ -27,7 +27,7 @@ export function Card({ variant = 'default', children, className = '', ...props }
   const baseStyles = 'rounded-2xl p-5 transition-all duration-250';
 
   return (
-    <motion.div
+    <m.div
       className={`${baseStyles} ${variantStyles[variant]} ${className}`}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -36,6 +36,6 @@ export function Card({ variant = 'default', children, className = '', ...props }
       {...props}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }

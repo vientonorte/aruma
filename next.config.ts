@@ -7,7 +7,10 @@ const securityHeaders = [
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
   {
     key: "Content-Security-Policy",
-    value: "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+    // 'unsafe-inline' en script-src es necesario para los scripts inline de
+    // hidratación de Next.js en páginas estáticas (sin él, React no se monta
+    // y el formulario de reserva queda inerte en producción).
+    value: "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
   },
 ];
 

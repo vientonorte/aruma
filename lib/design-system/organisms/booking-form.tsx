@@ -7,7 +7,7 @@
 'use client';
 
 import React, { useState, FormEvent } from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { z } from 'zod';
 import { sanitizeInput } from '@/lib/sanitize';
 import { FormField } from '../molecules/form-field';
@@ -143,7 +143,7 @@ export function BookingForm({ onSubmit, variant = 'default' }: BookingFormProps)
         Completa el siguiente formulario para solicitar una reserva de forma segura.
       </Text>
 
-      <motion.form
+      <m.form
         onSubmit={handleSubmit}
         className="grid gap-6"
         initial={{ opacity: 0 }}
@@ -241,7 +241,7 @@ export function BookingForm({ onSubmit, variant = 'default' }: BookingFormProps)
             onDismiss={() => setStatus(null)}
           />
         )}
-      </motion.form>
+      </m.form>
     </Card>
   );
 }

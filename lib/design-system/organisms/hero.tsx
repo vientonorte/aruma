@@ -7,18 +7,40 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { Heading, Text } from '../atoms/typography';
-import { Button } from '../atoms/button';
+import { Button, ButtonLink, type ButtonVariant } from '../atoms/button';
 import { BotanicalBackground } from '../patterns/botanical';
+
+export interface HeroAction {
+  label: string;
+  /** Ancla o ruta: permite usar el Hero desde Server Components. */
+  href?: string;
+  onClick?: () => void;
+}
 
 export interface HeroProps {
   title: string;
   subtitle?: string;
   description: string;
-  primaryAction?: { label: string; onClick: () => void };
-  secondaryAction?: { label: string; onClick: () => void };
+  primaryAction?: HeroAction;
+  secondaryAction?: HeroAction;
   variant?: 'default' | 'botanical';
+}
+
+function HeroActionButton({ action, variant }: { action: HeroAction; variant: ButtonVariant }) {
+  if (action.href) {
+    return (
+      <ButtonLink variant={variant} size="lg" href={action.href}>
+        {action.label}
+      </ButtonLink>
+    );
+  }
+  return (
+    <Button variant={variant} size="lg" onClick={action.onClick}>
+      {action.label}
+    </Button>
+  );
 }
 
 export function Hero({
@@ -37,17 +59,17 @@ export function Hero({
 
       <div className="relative z-10 mx-auto max-w-3xl text-center">
         {subtitle && (
-          <motion.p
+          <m.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             className="text-xs uppercase tracking-[0.24em] text-[#86868B]"
           >
             {subtitle}
-          </motion.p>
+          </m.p>
         )}
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -55,9 +77,9 @@ export function Hero({
           <Heading as="h1" brand className="mt-4 text-4xl sm:text-5xl lg:text-6xl">
             {title}
           </Heading>
-        </motion.div>
+        </m.div>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
@@ -65,26 +87,20 @@ export function Hero({
           <Text size="lg" muted className="mt-6 max-w-2xl mx-auto">
             {description}
           </Text>
-        </motion.div>
+        </m.div>
 
         {(primaryAction || secondaryAction) && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
             className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             {primaryAction && (
-              <Button variant={isBotanical ? 'botanical' : 'primary'} size="lg" onClick={primaryAction.onClick}>
-                {primaryAction.label}
-              </Button>
+              <HeroActionButton action={primaryAction} variant={isBotanical ? 'botanical' : 'primary'} />
             )}
-            {secondaryAction && (
-              <Button variant="ghost" size="lg" onClick={secondaryAction.onClick}>
-                {secondaryAction.label}
-              </Button>
-            )}
-          </motion.div>
+            {secondaryAction && <HeroActionButton action={secondaryAction} variant="ghost" />}
+          </m.div>
         )}
       </div>
     </section>
