@@ -11,6 +11,7 @@ import { motion } from 'framer-motion';
 import { z } from 'zod';
 import { sanitizeInput } from '@/lib/sanitize';
 import { FormField } from '../molecules/form-field';
+import { SlotPicker } from '../molecules/slot-picker';
 import { Button } from '../atoms/button';
 import { StatusMessage } from '../molecules/status-message';
 import { Card } from '../atoms/card';
@@ -50,6 +51,8 @@ export function BookingForm({ onSubmit, variant = 'default' }: BookingFormProps)
   const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+  // Remonta el SlotPicker tras reservar para refrescar la disponibilidad.
+  const [pickerKey, setPickerKey] = useState(0);
 
   const canCollectContactData = form.consent;
 
@@ -93,12 +96,35 @@ export function BookingForm({ onSubmit, variant = 'default' }: BookingFormProps)
           body: JSON.stringify(result.data),
         });
 
+        const payload = (await response.json()) as {
+          error?: string;
+          start?: string;
+          timeZone?: string;
+        };
+
         if (!response.ok) {
-          const payload = (await response.json()) as { error?: string };
           setStatus({ type: 'error', message: payload.error ?? 'No fue posible completar la reserva.' });
         } else {
           setForm(initialState);
-          setStatus({ type: 'success', message: 'Reserva enviada de forma segura.' });
+          setPickerKey((key) => key + 1);
+          const confirmed =
+            payload.start && payload.timeZone
+              ? new Intl.DateTimeFormat('es-CL', {
+                  timeZone: payload.timeZone,
+                  weekday: 'long',
+                  day: 'numeric',
+                  month: 'long',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hourCycle: 'h23',
+                }).format(new Date(payload.start))
+              : null;
+          setStatus({
+            type: 'success',
+            message: confirmed
+              ? `Reserva confirmada para el ${confirmed}. Quedó agendada en nuestro calendario.`
+              : 'Reserva enviada de forma segura.',
+          });
         }
       }
     } catch {
@@ -174,17 +200,12 @@ export function BookingForm({ onSubmit, variant = 'default' }: BookingFormProps)
           }}
         />
 
-        <FormField
-          label="Fecha y hora"
-          id="date"
-          required
+        <SlotPicker
+          key={pickerKey}
+          value={form.date}
+          onChange={(date) => setForm((prev) => ({ ...prev, date }))}
+          disabled={!canCollectContactData}
           error={errors.date}
-          inputProps={{
-            type: 'datetime-local',
-            value: form.date,
-            disabled: !canCollectContactData,
-            onChange: (e) => setForm((prev) => ({ ...prev, date: e.target.value })),
-          }}
         />
 
         <FormField
