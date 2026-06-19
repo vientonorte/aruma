@@ -6,12 +6,18 @@
 
 import React, { useState } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
-import { Calendar, Mail, Shield, Clock } from 'lucide-react';
+import { Calendar, Mail, Shield, Clock, AlertTriangle } from 'lucide-react';
 import { ButtonLink } from '../atoms/button';
 import { Card } from '../atoms/card';
 import { Heading, Text, Overline } from '../atoms/typography';
 import { Badge } from '../atoms/badge';
-import { brandConfig, resolveBookingUrl, type SessionType } from '@/lib/brand.config';
+import { StatusMessage } from '../molecules/status-message';
+import { useBrandConfig } from '@/lib/use-brand-config';
+import {
+  isValidBookingUrl,
+  resolveBookingUrlFromConfig,
+} from '@/lib/brand-storage';
+import type { SessionType } from '@/lib/brand.config';
 
 const GOOGLE_BENEFITS = [
   {
@@ -87,10 +93,13 @@ function SessionCard({
 }
 
 export function GoogleBookingPanel() {
-  const [selectedId, setSelectedId] = useState(brandConfig.sessionTypes[0]?.id ?? '');
+  const config = useBrandConfig();
+  const [selectedId, setSelectedId] = useState(config.sessionTypes[0]?.id ?? '');
   const selectedSession =
-    brandConfig.sessionTypes.find((s) => s.id === selectedId) ?? brandConfig.sessionTypes[0];
-  const bookingUrl = resolveBookingUrl(selectedSession);
+    config.sessionTypes.find((s) => s.id === selectedId) ?? config.sessionTypes[0];
+  const bookingUrl = resolveBookingUrlFromConfig(config, selectedSession);
+  const bookingReady = isValidBookingUrl(bookingUrl);
+  const contactEmail = config.contactEmail?.trim();
 
   return (
     <Card variant="botanical" className="mx-auto max-w-2xl">
@@ -105,9 +114,46 @@ export function GoogleBookingPanel() {
         </Text>
       </div>
 
+      {!bookingReady && (
+        <div className="mt-6">
+          <StatusMessage
+            type="warning"
+            title="Agenda en reconfiguración"
+            message="El enlace anterior de Google Calendar ya no es válido (la cita pudo haberse borrado o el vínculo cambió). Estamos activando una nueva página de reservas."
+          />
+          <div className="mt-4 rounded-xl border border-[#2F2F31] bg-[#0A0A0A]/60 p-4 text-left text-sm text-[#86868B]">
+            <p className="flex items-start gap-2 font-medium text-[#F5F5F7]">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[#F59E0B]" aria-hidden="true" />
+              Si eres el dueño del estudio
+            </p>
+            <ol className="mt-3 list-decimal space-y-2 pl-5">
+              <li>
+                Abre{' '}
+                <a
+                  href="https://calendar.google.com/calendar/u/0/r/appointments"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#3D9461] underline hover:text-[#5DAF7D]"
+                >
+                  Google Calendar → Páginas de reserva de citas
+                </a>
+              </li>
+              <li>Crea una página nueva (duración, horarios, zona horaria Chile).</li>
+              <li>Copia el enlace <code className="text-[#F5F5F7]">calendar.app.google/…</code></li>
+              <li>
+                Pégalo en{' '}
+                <a href="/brand" className="text-[#3D9461] underline hover:text-[#5DAF7D]">
+                  /brand → Editar marca → URL de reservas
+                </a>
+              </li>
+            </ol>
+          </div>
+        </div>
+      )}
+
       <fieldset className="mt-6 space-y-3" aria-label="Tipo de sesión">
         <legend className="sr-only">Selecciona el tipo de sesión</legend>
-        {brandConfig.sessionTypes.map((session) => (
+        {config.sessionTypes.map((session) => (
           <SessionCard
             key={session.id}
             session={session}
@@ -127,26 +173,46 @@ export function GoogleBookingPanel() {
           className="mt-6 rounded-xl border border-[#2F2F31] bg-[#0A0A0A]/60 p-4"
         >
           <Text size="sm" className="text-[#F5F5F7]">
-            <span className="font-semibold text-[#3D9461]">Paso 2 ·</span> Abre la agenda de Google
-            y elige fecha y hora para{' '}
-            <span className="font-medium">{selectedSession?.name}</span>.
+            <span className="font-semibold text-[#3D9461]">Paso 2 ·</span>{' '}
+            {bookingReady
+              ? <>Abre la agenda de Google y elige fecha y hora para{' '}
+                  <span className="font-medium">{selectedSession?.name}</span>.</>
+              : <>Cuando la agenda esté activa, podrás elegir fecha y hora para{' '}
+                  <span className="font-medium">{selectedSession?.name}</span>.</>}
           </Text>
         </m.div>
       </AnimatePresence>
 
       <div className="mt-6 flex flex-col items-center gap-3">
-        <ButtonLink
-          variant="botanical"
-          size="lg"
-          href={bookingUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="w-full sm:w-auto"
-        >
-          Continuar en Google Calendar
-        </ButtonLink>
+        {bookingReady ? (
+          <ButtonLink
+            variant="botanical"
+            size="lg"
+            href={bookingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full sm:w-auto"
+          >
+            Continuar en Google Calendar
+          </ButtonLink>
+        ) : contactEmail ? (
+          <ButtonLink
+            variant="botanical"
+            size="lg"
+            href={`mailto:${contactEmail}?subject=${encodeURIComponent(`Reserva ĀRŪḾA — ${selectedSession?.name ?? 'Sesión'}`)}`}
+            className="w-full sm:w-auto"
+          >
+            Escribir para reservar
+          </ButtonLink>
+        ) : (
+          <p className="text-sm text-[#86868B]">
+            Vuelve pronto o contacta al estudio por los canales habituales.
+          </p>
+        )}
         <Text size="sm" muted>
-          Se abre en una pestaña nueva · {brandConfig.businessHours}
+          {bookingReady
+            ? `Se abre en una pestaña nueva · ${config.businessHours}`
+            : config.businessHours}
         </Text>
       </div>
 

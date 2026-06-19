@@ -20,30 +20,11 @@ import {
   BrandPlate,
 } from '@/lib/design-system';
 import { brandConfig, type BrandConfig, type BrandColorKey } from '@/lib/brand.config';
-
-const STORAGE_KEY = 'aruma-brand-config';
-
-function loadStored(): BrandConfig | null {
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as BrandConfig;
-    // Mezcla superficial con los valores por defecto para tolerar versiones antiguas.
-    return {
-      ...brandConfig,
-      ...parsed,
-      colors: { ...brandConfig.colors, ...parsed.colors },
-      buttons: { ...brandConfig.buttons, ...parsed.buttons },
-      project: { ...brandConfig.project, ...parsed.project },
-      usage: { ...brandConfig.usage, ...parsed.usage },
-      location: { ...brandConfig.location, ...parsed.location },
-      google: { ...brandConfig.google, ...parsed.google },
-      sessionTypes: parsed.sessionTypes ?? brandConfig.sessionTypes,
-    };
-  } catch {
-    return null;
-  }
-}
+import {
+  BRAND_STORAGE_KEY,
+  loadStoredBrandConfig,
+  isValidBookingUrl,
+} from '@/lib/brand-storage';
 
 export default function BrandPage() {
   const [config, setConfig] = useState<BrandConfig>(brandConfig);
@@ -53,7 +34,7 @@ export default function BrandPage() {
   useEffect(() => {
     // localStorage solo existe en el cliente: hidratar aquí (y no en el
     // inicializador de useState) evita desajustes con el HTML prerenderizado.
-    const stored = loadStored();
+    const stored = loadStoredBrandConfig();
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (stored) setConfig(stored);
   }, []);
@@ -62,7 +43,7 @@ export default function BrandPage() {
     setConfig((prev) => {
       const next = { ...prev, ...partial };
       try {
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+        window.localStorage.setItem(BRAND_STORAGE_KEY, JSON.stringify(next));
       } catch {
         // Sin almacenamiento disponible: la edición sigue funcionando en memoria.
       }
@@ -86,7 +67,7 @@ export default function BrandPage() {
 
   function resetConfig() {
     try {
-      window.localStorage.removeItem(STORAGE_KEY);
+      window.localStorage.removeItem(BRAND_STORAGE_KEY);
     } catch {
       // ignorar
     }
@@ -142,6 +123,31 @@ export default function BrandPage() {
             aria-label="Editor de marca"
             className="mb-12 grid gap-4 rounded-2xl border-2 border-black bg-white p-5 sm:grid-cols-2"
           >
+            <label className="grid gap-1 text-sm font-bold sm:col-span-2">
+              URL de reservas (Google Calendar Appointments)
+              <input
+                type="url"
+                value={config.bookingUrl}
+                onChange={(e) => update({ bookingUrl: e.target.value.trim() })}
+                placeholder="https://calendar.app.google/…"
+                className="rounded-lg border border-black/30 px-3 py-2 font-normal"
+              />
+              <span className="text-xs font-normal" style={{ color: gris }}>
+                {isValidBookingUrl(config.bookingUrl)
+                  ? '✓ Enlace válido — pruébalo antes de copiar la configuración.'
+                  : 'Pega el enlace nuevo desde Google Calendar → Páginas de reserva de citas → Compartir.'}
+              </span>
+            </label>
+            <label className="grid gap-1 text-sm font-bold sm:col-span-2">
+              Correo de contacto (respaldo si la agenda no está lista)
+              <input
+                type="email"
+                value={config.contactEmail ?? ''}
+                onChange={(e) => update({ contactEmail: e.target.value.trim() })}
+                placeholder="estudio@ejemplo.cl"
+                className="rounded-lg border border-black/30 px-3 py-2 font-normal"
+              />
+            </label>
             <label className="grid gap-1 text-sm font-bold">
               Tagline
               <input

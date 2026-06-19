@@ -1,4 +1,5 @@
 import { brandConfig } from './brand.config';
+import { isValidBookingUrl } from './brand-storage';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://vientonorte.github.io/aruma';
 const SITE_DESCRIPTION =
@@ -72,13 +73,16 @@ export function buildLocalBusinessJsonLd() {
 }
 
 export function buildWebSiteJsonLd() {
-  return {
+  const jsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'ĀRŪḾA',
     url: SITE_URL,
     description: SITE_DESCRIPTION,
-    potentialAction: {
+  };
+
+  if (isValidBookingUrl(brandConfig.bookingUrl)) {
+    jsonLd.potentialAction = {
       '@type': 'ReserveAction',
       target: {
         '@type': 'EntryPoint',
@@ -92,6 +96,8 @@ export function buildWebSiteJsonLd() {
         '@type': 'Reservation',
         name: 'Reserva de sesión fotográfica',
       },
-    },
-  };
+    };
+  }
+
+  return jsonLd;
 }

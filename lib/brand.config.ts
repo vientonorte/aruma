@@ -45,6 +45,8 @@ export type BrandConfig = {
   version: string;
   /** Página de citas de Google Calendar donde se agendan las sesiones. */
   bookingUrl: string;
+  /** Correo de contacto cuando la agenda no está disponible. */
+  contactEmail?: string;
   sessionTypes: SessionType[];
   location: StudioLocation;
   google: GoogleIntegrations;
@@ -60,7 +62,10 @@ export const brandConfig: BrandConfig = {
   name: 'ARUMA',
   tagline: 'Espacio para la Exploración Visual.',
   version: '2.0',
-  bookingUrl: 'https://calendar.app.google/Gw2Js1fHiAiVwiuS6',
+  // Vacío hasta pegar el enlace nuevo de Google Calendar Appointments.
+  // El enlace anterior (Gw2Js1fHiAiVwiuS6) fue eliminado o invalidado en Google.
+  bookingUrl: '',
+  contactEmail: '',
   sessionTypes: [
     {
       id: 'foto-intima',
@@ -114,7 +119,7 @@ export const brandConfig: BrandConfig = {
   usage: { subtitle: "'RIGGER / TANTRA'", caption: 'Espacio para la exploración visual.' },
 };
 
-/** Resuelve la URL de reserva para un tipo de sesión (o la URL global). */
+/** @deprecated Usa resolveBookingUrlFromConfig desde brand-storage. */
 export function resolveBookingUrl(session?: SessionType): string {
   return session?.bookingUrl ?? brandConfig.bookingUrl;
 }
