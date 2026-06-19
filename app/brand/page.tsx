@@ -36,6 +36,9 @@ function loadStored(): BrandConfig | null {
       buttons: { ...brandConfig.buttons, ...parsed.buttons },
       project: { ...brandConfig.project, ...parsed.project },
       usage: { ...brandConfig.usage, ...parsed.usage },
+      location: { ...brandConfig.location, ...parsed.location },
+      google: { ...brandConfig.google, ...parsed.google },
+      sessionTypes: parsed.sessionTypes ?? brandConfig.sessionTypes,
     };
   } catch {
     return null;

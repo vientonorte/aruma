@@ -1,12 +1,20 @@
-import Link from "next/link";
-import { Hero, BentoGrid, ButtonLink, Card, Heading, Text, Overline } from "@/lib/design-system";
-import { brandConfig } from "@/lib/brand.config";
+import {
+  Hero,
+  BentoGrid,
+  Card,
+  Heading,
+  Text,
+  Overline,
+  GoogleBookingPanel,
+  GoogleMapsSection,
+  GoogleFeaturesStrip,
+} from "@/lib/design-system";
 
 const PROCESS_STEPS = [
   {
     step: '01',
-    title: 'Reserva',
-    description: 'Elige fecha y hora en segundos. Todo online, sin llamadas ni esperas.',
+    title: 'Elige tu sesión',
+    description: 'Selecciona el tipo de experiencia y abre la agenda de Google con cupos reales.',
   },
   {
     step: '02',
@@ -24,7 +32,6 @@ export default function Home() {
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-4 py-8 sm:px-6 sm:py-12">
 
-      {/* Empatizar: Hero con propuesta de valor clara y llamadas a la acción */}
       <Hero
         title="ĀRŪḾA"
         subtitle="Espacio para la Exploración Visual"
@@ -34,30 +41,8 @@ export default function Home() {
         secondaryAction={{ label: "Ver servicios", href: "#servicios" }}
       />
 
-      {/* Franja de confianza: estado del sistema y accesos, al estilo app */}
-      <section aria-label="Calidad del sitio" className="-mt-8">
-        <ul className="flex flex-wrap items-center justify-center gap-2 text-xs text-[#86868B]">
-          <li className="rounded-full border border-[#2F2F31] bg-[#1C1C1E] px-3 py-1.5">
-            ĀRŪḾA v1.0 · <span className="text-[#3D9461]">STABLE</span>
-          </li>
-          <li className="rounded-full border border-[#2F2F31] bg-[#1C1C1E] px-3 py-1.5">
-            WCAG 2.1 AA
-          </li>
-          <li className="rounded-full border border-[#2F2F31] bg-[#1C1C1E] px-3 py-1.5">
-            Reservas en tiempo real
-          </li>
-          <li>
-            <Link
-              href="/brand"
-              className="block rounded-full border border-[#F5F0E8]/40 bg-[#1C1C1E] px-3 py-1.5 text-[#F5F0E8] transition-colors hover:border-[#F5F0E8]"
-            >
-              Design System →
-            </Link>
-          </li>
-        </ul>
-      </section>
+      <GoogleFeaturesStrip />
 
-      {/* Definir: Líneas de negocio centradas en beneficios del usuario */}
       <section id="servicios" aria-labelledby="servicios-heading">
         <div className="mb-8 text-center">
           <Overline>Nuestras líneas de negocio</Overline>
@@ -76,9 +61,9 @@ export default function Home() {
               variant: "botanical",
             },
             {
-              icon: <CameraIcon />,
-              title: "Fotografía auténtica",
-              description: "Capturamos quién eres de verdad, sin poses forzadas. Tu historia, contada con honestidad.",
+              icon: <CalendarIcon />,
+              title: "Agenda Google en vivo",
+              description: "Disponibilidad real, confirmación por Gmail y recordatorios automáticos — sin llamadas ni esperas.",
               span: 1,
             },
             {
@@ -99,7 +84,6 @@ export default function Home() {
         />
       </section>
 
-      {/* Prototipar: Sección de proceso paso a paso para reducir fricción y aumentar confianza */}
       <section id="proceso" aria-labelledby="proceso-heading">
         <div className="mb-8 text-center">
           <Overline>Así de sencillo</Overline>
@@ -132,7 +116,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Validar: Reserva directa en la agenda de Google del estudio */}
       <section id="reserva" aria-labelledby="reserva-heading">
         <div className="mb-8 text-center">
           <Overline>Da el primer paso</Overline>
@@ -140,33 +123,14 @@ export default function Home() {
             Reserva tu sesión
           </Heading>
           <Text size="sm" muted className="mt-2 mx-auto max-w-md">
-            Proceso seguro y confidencial. Tus datos solo se usan para gestionar tu reserva.
+            Proceso seguro y confidencial. Tus datos se gestionan en Google Calendar con
+            confirmación y recordatorios automáticos.
           </Text>
         </div>
-        <Card variant="botanical" className="mx-auto max-w-xl text-center">
-          <Heading as="h3" className="text-xl">
-            Agenda directamente en nuestro calendario
-          </Heading>
-          <Text size="sm" muted className="mx-auto mt-3 max-w-md">
-            Elige el horario que te acomode entre los cupos realmente disponibles. Recibirás la
-            confirmación y los recordatorios automáticos en tu correo.
-          </Text>
-          <div className="mt-6 flex justify-center">
-            <ButtonLink
-              variant="botanical"
-              size="lg"
-              href={brandConfig.bookingUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Reservar mi sesión
-            </ButtonLink>
-          </div>
-          <Text size="sm" muted className="mt-4">
-            Se abre la agenda segura de Google Calendar en una pestaña nueva.
-          </Text>
-        </Card>
+        <GoogleBookingPanel />
       </section>
+
+      <GoogleMapsSection />
 
     </main>
   );
@@ -180,11 +144,10 @@ function LeafIcon() {
   );
 }
 
-function CameraIcon() {
+function CalendarIcon() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M12 15.2a3.2 3.2 0 100-6.4 3.2 3.2 0 000 6.4z" />
-      <path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15a5 5 0 110-10 5 5 0 010 10z" />
+      <path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2zm0 16H5V10h14v10zM5 8V6h14v2H5z" />
     </svg>
   );
 }

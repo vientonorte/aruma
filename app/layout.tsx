@@ -2,21 +2,30 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
-// Fuente secundaria oficial de la marca (lámina de identidad ARUMA).
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 import { Header, Footer, MotionProvider } from "@/lib/design-system";
+import { buildLocalBusinessJsonLd, buildWebSiteJsonLd } from "@/lib/json-ld";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://vientonorte.github.io/aruma";
 const SITE_DESCRIPTION =
-  "Espacio íntimo y seguro para sesiones fotográficas auténticas. Reserva online en segundos, con total privacidad y protección de tus datos.";
+  "Espacio íntimo y seguro para sesiones fotográficas auténticas. Reserva online con Google Calendar en segundos, con total privacidad y protección de tus datos.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "ĀRŪḾA | Estudio fotográfico — Reserva tu sesión",
+    default: "ĀRŪḾA | Estudio fotográfico — Reserva con Google Calendar",
     template: "%s | ĀRŪḾA",
   },
   description: SITE_DESCRIPTION,
+  keywords: [
+    "estudio fotográfico",
+    "sesión fotográfica íntima",
+    "reserva online",
+    "Google Calendar",
+    "Santiago Chile",
+    "ĀRŪḾA",
+    "ARUMA",
+  ],
   openGraph: {
     type: "website",
     locale: "es_CL",
@@ -26,22 +35,15 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "ĀRŪḾA | Estudio fotográfico & espacio seguro",
     description: SITE_DESCRIPTION,
   },
   robots: { index: true, follow: true },
+  alternates: { canonical: "/" },
 };
 
-const localBusinessJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  name: "ĀRŪḾA",
-  description: SITE_DESCRIPTION,
-  url: SITE_URL,
-  address: { "@type": "PostalAddress", addressCountry: "CL" },
-  priceRange: "$$",
-};
+const structuredData = [buildLocalBusinessJsonLd(), buildWebSiteJsonLd()];
 
 export default function RootLayout({
   children,
@@ -53,7 +55,7 @@ export default function RootLayout({
       <body className={`${inter.className} flex min-h-full flex-col bg-[#0A0A0A] text-[#F5F5F7]`}>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
         <a
           href="#contenido"
@@ -67,6 +69,7 @@ export default function RootLayout({
             { label: "Servicios", href: "#servicios" },
             { label: "Proceso", href: "#proceso" },
             { label: "Reservar", href: "#reserva" },
+            { label: "Ubicación", href: "#ubicacion" },
             { label: "Design System →", href: "/brand" },
           ]}
         />
@@ -78,6 +81,7 @@ export default function RootLayout({
               items: [
                 { label: "Sesión fotográfica", href: "#servicios" },
                 { label: "Reservar sesión", href: "#reserva" },
+                { label: "Ubicación", href: "#ubicacion" },
               ],
             },
             {
