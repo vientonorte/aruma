@@ -28,6 +28,7 @@ import {
 import { brandConfigSchema } from '@/lib/brand-schema';
 import { formatBusinessHours } from '@/lib/business-hours';
 import { ServicesAgendaEditor } from '@/components/brand/services-agenda-editor';
+import { ServicesSchedulePreview } from '@/components/brand/services-schedule-preview';
 
 export default function BrandPage() {
   const [config, setConfig] = useState<BrandConfig>(brandConfig);
@@ -248,6 +249,13 @@ export default function BrandPage() {
           </section>
           </>
         )}
+
+        <ServicesSchedulePreview
+          config={config}
+          negro={negro}
+          gris={gris}
+          acento={acento}
+        />
 
         <div className="grid gap-12 lg:grid-cols-2">
           {/* 01. Logo */}
