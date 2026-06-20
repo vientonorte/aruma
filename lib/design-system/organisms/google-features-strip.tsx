@@ -7,7 +7,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Calendar, Map, Mail, Bell } from 'lucide-react';
-import { brandConfig } from '@/lib/brand.config';
+import { useBrandConfig } from '@/lib/use-brand-config';
 
 const FEATURE_ICONS = {
   calendar: Calendar,
@@ -16,7 +16,7 @@ const FEATURE_ICONS = {
   reminders: Bell,
 } as const;
 
-type FeatureKey = keyof typeof brandConfig.google;
+type FeatureKey = 'calendarAppointments' | 'maps' | 'emailReminders' | 'autoReminders';
 
 const FEATURE_LABELS: Record<FeatureKey, { label: string; icon: keyof typeof FEATURE_ICONS }> = {
   calendarAppointments: { label: 'Google Calendar', icon: 'calendar' },
@@ -26,6 +26,7 @@ const FEATURE_LABELS: Record<FeatureKey, { label: string; icon: keyof typeof FEA
 };
 
 export function GoogleFeaturesStrip() {
+  const brandConfig = useBrandConfig();
   const activeFeatures = (Object.entries(brandConfig.google) as [FeatureKey, boolean][])
     .filter(([, enabled]) => enabled)
     .map(([key]) => FEATURE_LABELS[key]);

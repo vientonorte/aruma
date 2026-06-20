@@ -1,15 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { brandConfig, type BrandConfig } from './brand.config';
-import { loadStoredBrandConfig } from './brand-storage';
+import { useBrandConfigContext } from './brand-config-context';
 
-function getInitialBrandConfig(): BrandConfig {
-  if (typeof window === 'undefined') return brandConfig;
-  return loadStoredBrandConfig() ?? brandConfig;
-}
-
-export function useBrandConfig(): BrandConfig {
-  const [config] = useState(getInitialBrandConfig);
-  return config;
+export function useBrandConfig() {
+  return useBrandConfigContext();
 }

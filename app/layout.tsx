@@ -4,6 +4,7 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 import { Header, Footer, MotionProvider } from "@/lib/design-system";
+import { BrandConfigProvider } from "@/lib/brand-config-context";
 import { buildLocalBusinessJsonLd, buildWebSiteJsonLd } from "@/lib/json-ld";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://vientonorte.github.io/aruma";
@@ -63,6 +64,7 @@ export default function RootLayout({
         >
           Saltar al contenido principal
         </a>
+        <BrandConfigProvider>
         <MotionProvider>
         <Header
           navigation={[
@@ -94,6 +96,7 @@ export default function RootLayout({
           ]}
         />
         </MotionProvider>
+        </BrandConfigProvider>
       </body>
     </html>
   );

@@ -6,6 +6,13 @@
  * La página /brand permite ajustarlos en vivo y exportar esta configuración.
  */
 
+import {
+  DEFAULT_BUSINESS_HOURS_RULES,
+  DEFAULT_TIMEZONE,
+  formatBusinessHours,
+  type BusinessHoursRule,
+} from './business-hours';
+
 export type BrandColorKey = 'negro' | 'blanco' | 'gris' | 'acento';
 
 export type SessionType = {
@@ -50,7 +57,10 @@ export type BrandConfig = {
   sessionTypes: SessionType[];
   location: StudioLocation;
   google: GoogleIntegrations;
+  /** Reglas canónicas — businessHours se deriva siempre desde aquí. */
+  businessHoursRules: BusinessHoursRule[];
   businessHours: string;
+  timezone: string;
   colors: Record<BrandColorKey, { label: string; value: string }>;
   nav: string[];
   buttons: { primary: string; secondary: string };
@@ -106,7 +116,9 @@ export const brandConfig: BrandConfig = {
     emailReminders: true,
     autoReminders: true,
   },
-  businessHours: 'Martes a sábado, 10:00–20:00 (hora Chile continental)',
+  businessHoursRules: DEFAULT_BUSINESS_HOURS_RULES,
+  timezone: DEFAULT_TIMEZONE,
+  businessHours: formatBusinessHours(DEFAULT_BUSINESS_HOURS_RULES, DEFAULT_TIMEZONE),
   colors: {
     negro: { label: 'Negro Principal', value: '#000000' },
     blanco: { label: 'Blanco', value: '#FFFFFF' },

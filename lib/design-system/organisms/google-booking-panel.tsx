@@ -18,12 +18,13 @@ import {
   resolveBookingUrlFromConfig,
 } from '@/lib/brand-storage';
 import type { SessionType } from '@/lib/brand.config';
+import { withBasePath } from '@/lib/site-path';
 
 const GOOGLE_BENEFITS = [
   {
     icon: Calendar,
     title: 'Disponibilidad en tiempo real',
-    description: 'Solo ves horarios realmente libres en la agenda del estudio.',
+    description: 'En Google Calendar ves solo los cupos libres del estudio.',
   },
   {
     icon: Mail,
@@ -38,7 +39,7 @@ const GOOGLE_BENEFITS = [
   {
     icon: Shield,
     title: 'Sin dobles reservas',
-    description: 'La agenda bloquea el cupo al instante; nadie más puede tomarlo.',
+    description: 'Google bloquea el cupo al reservar; evita choques de horario.',
   },
 ];
 
@@ -142,8 +143,11 @@ export function GoogleBookingPanel() {
               <li>Copia el enlace <code className="text-[#F5F5F7]">calendar.app.google/…</code></li>
               <li>
                 Pégalo en{' '}
-                <a href="/brand" className="text-[#3D9461] underline hover:text-[#5DAF7D]">
-                  /brand → Editar marca → URL de reservas
+                <a
+                  href={withBasePath('/brand')}
+                  className="text-[#3D9461] underline hover:text-[#5DAF7D]"
+                >
+                  /aruma/brand → Editar marca → Servicios y agenda
                 </a>
               </li>
             </ol>

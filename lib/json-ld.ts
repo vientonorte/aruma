@@ -1,4 +1,5 @@
 import { brandConfig } from './brand.config';
+import { toOpeningHoursSpecification } from './business-hours';
 import { isValidBookingUrl } from './brand-storage';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://vientonorte.github.io/aruma';
@@ -19,12 +20,9 @@ export function buildLocalBusinessJsonLd() {
       '@type': 'AdministrativeArea',
       name: location.area,
     },
-    openingHoursSpecification: {
-      '@type': 'OpeningHoursSpecification',
-      dayOfWeek: ['Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-      opens: '10:00',
-      closes: '20:00',
-    },
+    openingHoursSpecification: toOpeningHoursSpecification(
+      brandConfig.businessHoursRules,
+    ),
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
       name: 'Sesiones ĀRŪḾA',

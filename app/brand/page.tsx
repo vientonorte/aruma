@@ -21,15 +21,19 @@ import {
 } from '@/lib/design-system';
 import { brandConfig, type BrandConfig, type BrandColorKey } from '@/lib/brand.config';
 import {
-  BRAND_STORAGE_KEY,
+  clearStoredBrandConfig,
   loadStoredBrandConfig,
-  isValidBookingUrl,
+  persistBrandConfig,
 } from '@/lib/brand-storage';
+import { brandConfigSchema } from '@/lib/brand-schema';
+import { formatBusinessHours } from '@/lib/business-hours';
+import { ServicesAgendaEditor } from '@/components/brand/services-agenda-editor';
 
 export default function BrandPage() {
   const [config, setConfig] = useState<BrandConfig>(brandConfig);
   const [editing, setEditing] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
 
   useEffect(() => {
     // localStorage solo existe en el cliente: hidratar aquí (y no en el
@@ -41,9 +45,19 @@ export default function BrandPage() {
 
   function update(partial: Partial<BrandConfig>) {
     setConfig((prev) => {
-      const next = { ...prev, ...partial };
+      const rules = partial.businessHoursRules ?? prev.businessHoursRules;
+      const timezone = partial.timezone ?? prev.timezone;
+      const next: BrandConfig = {
+        ...prev,
+        ...partial,
+        businessHours:
+          partial.businessHours ??
+          (partial.businessHoursRules
+            ? formatBusinessHours(rules, timezone)
+            : prev.businessHours),
+      };
       try {
-        window.localStorage.setItem(BRAND_STORAGE_KEY, JSON.stringify(next));
+        persistBrandConfig(next);
       } catch {
         // Sin almacenamiento disponible: la edición sigue funcionando en memoria.
       }
@@ -56,22 +70,35 @@ export default function BrandPage() {
   }
 
   async function copyConfig() {
+    setExportError(null);
+    const normalized = {
+      ...config,
+      businessHours: formatBusinessHours(config.businessHoursRules, config.timezone),
+    };
+    const parsed = brandConfigSchema.safeParse(normalized);
+    if (!parsed.success) {
+      const message = parsed.error.issues.map((i) => i.message).join(' · ');
+      setExportError(message || 'Configuración inválida');
+      return;
+    }
     try {
-      await navigator.clipboard.writeText(JSON.stringify(config, null, 2));
+      await navigator.clipboard.writeText(JSON.stringify(parsed.data, null, 2));
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     } catch {
       setCopied(false);
+      setExportError('No se pudo copiar al portapapeles');
     }
   }
 
   function resetConfig() {
     try {
-      window.localStorage.removeItem(BRAND_STORAGE_KEY);
+      clearStoredBrandConfig();
     } catch {
       // ignorar
     }
     setConfig(brandConfig);
+    setExportError(null);
   }
 
   const negro = config.colors.negro.value;
@@ -119,35 +146,12 @@ export default function BrandPage() {
         </div>
 
         {editing && (
+          <>
+          <ServicesAgendaEditor config={config} onChange={update} />
           <section
             aria-label="Editor de marca"
             className="mb-12 grid gap-4 rounded-2xl border-2 border-black bg-white p-5 sm:grid-cols-2"
           >
-            <label className="grid gap-1 text-sm font-bold sm:col-span-2">
-              URL de reservas (Google Calendar Appointments)
-              <input
-                type="url"
-                value={config.bookingUrl}
-                onChange={(e) => update({ bookingUrl: e.target.value.trim() })}
-                placeholder="https://calendar.app.google/…"
-                className="rounded-lg border border-black/30 px-3 py-2 font-normal"
-              />
-              <span className="text-xs font-normal" style={{ color: gris }}>
-                {isValidBookingUrl(config.bookingUrl)
-                  ? '✓ Enlace válido — pruébalo antes de copiar la configuración.'
-                  : 'Pega el enlace nuevo desde Google Calendar → Páginas de reserva de citas → Compartir.'}
-              </span>
-            </label>
-            <label className="grid gap-1 text-sm font-bold sm:col-span-2">
-              Correo de contacto (respaldo si la agenda no está lista)
-              <input
-                type="email"
-                value={config.contactEmail ?? ''}
-                onChange={(e) => update({ contactEmail: e.target.value.trim() })}
-                placeholder="estudio@ejemplo.cl"
-                className="rounded-lg border border-black/30 px-3 py-2 font-normal"
-              />
-            </label>
             <label className="grid gap-1 text-sm font-bold">
               Tagline
               <input
@@ -232,10 +236,17 @@ export default function BrandPage() {
               ))}
             </div>
             <p className="text-xs sm:col-span-2" style={{ color: gris }}>
-              Los cambios se guardan en este navegador. Usa «Copiar configuración» y pégamela en el
-              chat para dejarlos permanentes en el sitio.
+              Los cambios se guardan en este navegador y se reflejan en el sitio sin recargar.
+              Usa «Copiar configuración» y pégamela en el chat para dejarlos permanentes en el
+              código.
             </p>
+            {exportError && (
+              <p className="text-sm font-bold text-red-700 sm:col-span-2" role="alert">
+                {exportError}
+              </p>
+            )}
           </section>
+          </>
         )}
 
         <div className="grid gap-12 lg:grid-cols-2">

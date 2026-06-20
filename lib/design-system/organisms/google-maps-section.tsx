@@ -8,11 +8,12 @@ import React from 'react';
 import { MapPin, Navigation } from 'lucide-react';
 import { Card } from '../atoms/card';
 import { Heading, Text, Overline } from '../atoms/typography';
-import { brandConfig } from '@/lib/brand.config';
+import { useBrandConfig } from '@/lib/use-brand-config';
 
 export function GoogleMapsSection() {
-  const { location, businessHours } = brandConfig;
-  const hasEmbed = Boolean(location.mapsEmbedUrl) && brandConfig.google.maps;
+  const config = useBrandConfig();
+  const { location, businessHours } = config;
+  const hasEmbed = Boolean(location.mapsEmbedUrl) && config.google.maps;
 
   return (
     <section id="ubicacion" aria-labelledby="ubicacion-heading">

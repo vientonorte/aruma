@@ -1,0 +1,3 @@
+# Control secundario — el noindex primario está en app/brand/layout.tsx
+User-agent: *
+Disallow: /aruma/brand

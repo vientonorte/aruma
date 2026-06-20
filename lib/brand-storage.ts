@@ -1,12 +1,25 @@
 import { brandConfig, type BrandConfig } from './brand.config';
-
+import { formatBusinessHours } from './business-hours';
+import { brandConfigSchema } from './brand-schema';
 export const BRAND_STORAGE_KEY = 'aruma-brand-config';
+export const BRAND_CONFIG_EVENT = 'aruma-brand-config';
 
 /** Enlace roto conocido (página de citas eliminada en Google Calendar). */
 export const DEPRECATED_BOOKING_URL = 'https://calendar.app.google/Gw2Js1fHiAiVwiuS6';
 
-export function mergeBrandConfig(parsed: Partial<BrandConfig>): BrandConfig {
+function withDerivedBusinessHours(config: BrandConfig): BrandConfig {
+  const rules = config.businessHoursRules ?? brandConfig.businessHoursRules;
+  const timezone = config.timezone ?? brandConfig.timezone;
   return {
+    ...config,
+    businessHoursRules: rules,
+    timezone,
+    businessHours: formatBusinessHours(rules, timezone),
+  };
+}
+
+export function mergeBrandConfig(parsed: Partial<BrandConfig>): BrandConfig {
+  const merged = withDerivedBusinessHours({
     ...brandConfig,
     ...parsed,
     colors: { ...brandConfig.colors, ...parsed.colors },
@@ -16,7 +29,13 @@ export function mergeBrandConfig(parsed: Partial<BrandConfig>): BrandConfig {
     location: { ...brandConfig.location, ...parsed.location },
     google: { ...brandConfig.google, ...parsed.google },
     sessionTypes: parsed.sessionTypes ?? brandConfig.sessionTypes,
-  };
+    businessHoursRules: parsed.businessHoursRules ?? brandConfig.businessHoursRules,
+    timezone: parsed.timezone ?? brandConfig.timezone,
+  });
+
+  const result = brandConfigSchema.safeParse(merged);
+  if (!result.success) return brandConfig;
+  return result.data as BrandConfig;
 }
 
 export function loadStoredBrandConfig(): BrandConfig | null {
@@ -28,6 +47,17 @@ export function loadStoredBrandConfig(): BrandConfig | null {
   } catch {
     return null;
   }
+}
+
+export function persistBrandConfig(config: BrandConfig): void {
+  const normalized = withDerivedBusinessHours(config);
+  window.localStorage.setItem(BRAND_STORAGE_KEY, JSON.stringify(normalized));
+  window.dispatchEvent(new Event(BRAND_CONFIG_EVENT));
+}
+
+export function clearStoredBrandConfig(): void {
+  window.localStorage.removeItem(BRAND_STORAGE_KEY);
+  window.dispatchEvent(new Event(BRAND_CONFIG_EVENT));
 }
 
 const BOOKING_URL_PATTERN =
