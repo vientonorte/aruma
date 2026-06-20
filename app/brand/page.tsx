@@ -121,7 +121,7 @@ export default function BrandPage() {
         backgroundSize: '32px 32px',
       }}
     >
-      <div className="mx-auto max-w-5xl px-5">
+      <div className="mx-auto max-w-5xl px-4 sm:px-5">
         {/* Encabezado de la lámina */}
         <header className="mb-10 text-center">
           <h1 className="text-3xl font-black tracking-tight sm:text-4xl" style={{ color: negro }}>

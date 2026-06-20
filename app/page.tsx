@@ -30,7 +30,7 @@ const PROCESS_STEPS = [
 
 export default function Home() {
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-4 py-8 sm:px-6 sm:py-12">
+    <main className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-4 py-8 sm:gap-16 sm:px-6 sm:py-12">
 
       <Hero
         title="ĀRŪḾA"
