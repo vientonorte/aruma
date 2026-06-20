@@ -209,9 +209,17 @@ export function GoogleBookingPanel() {
             Escribir para reservar
           </ButtonLink>
         ) : (
-          <p className="text-sm text-[#86868B]">
-            Vuelve pronto o contacta al estudio por los canales habituales.
-          </p>
+          <div className="text-center">
+            <p className="text-sm text-[#86868B]">
+              La agenda de Google aún no está activa.
+            </p>
+            <a
+              href={withBasePath('/brand')}
+              className="mt-2 inline-block text-sm text-[#3D9461] underline hover:text-[#5DAF7D]"
+            >
+              Configurar en /brand → Servicios y agenda
+            </a>
+          </div>
         )}
         <Text size="sm" muted>
           {bookingReady

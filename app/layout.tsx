@@ -6,6 +6,7 @@ const inter = Inter({ subsets: ["latin"], display: "swap" });
 import { Header, Footer, MotionProvider } from "@/lib/design-system";
 import { BrandConfigProvider } from "@/lib/brand-config-context";
 import { buildLocalBusinessJsonLd, buildWebSiteJsonLd } from "@/lib/json-ld";
+import { brandConfig } from "@/lib/brand.config";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://vientonorte.github.io/aruma";
 const SITE_DESCRIPTION =
@@ -14,7 +15,7 @@ const SITE_DESCRIPTION =
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "ĀRŪḾA | Estudio fotográfico — Reserva con Google Calendar",
+    default: `ĀRŪḾA v${brandConfig.version} | Estudio fotográfico — Reserva con Google Calendar`,
     template: "%s | ĀRŪḾA",
   },
   description: SITE_DESCRIPTION,

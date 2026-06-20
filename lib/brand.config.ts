@@ -75,7 +75,8 @@ export const brandConfig: BrandConfig = {
   // Vacío hasta pegar el enlace nuevo de Google Calendar Appointments.
   // El enlace anterior (Gw2Js1fHiAiVwiuS6) fue eliminado o invalidado en Google.
   bookingUrl: '',
-  contactEmail: '',
+  /** Respaldo mailto cuando bookingUrl está vacío — editable en /brand */
+  contactEmail: 'contacto@vientonorte.cl',
   sessionTypes: [
     {
       id: 'foto-intima',
