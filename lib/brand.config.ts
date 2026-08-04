@@ -72,12 +72,24 @@ export const brandConfig: BrandConfig = {
   name: 'ARUMA',
   tagline: 'Espacio para la Exploración Visual.',
   version: '2.0',
-  // Vacío hasta pegar el enlace nuevo de Google Calendar Appointments.
-  // El enlace anterior (Gw2Js1fHiAiVwiuS6) fue eliminado o invalidado en Google.
+  // SPRINT ĀRŪḾA (deploy esta semana): vacío hasta cuenta tercera ĀRŪḾA +
+  // páginas de reserva. No usar gaete.gaona / IGNIARUS / ANTAKUNZA como cara pública.
+  // Ver SPRINT_ARUMA.md → pegar calendar.app.google/… aquí (y/o por sessionTypes).
   bookingUrl: '',
   /** Respaldo mailto cuando bookingUrl está vacío — editable en /brand */
   contactEmail: 'contacto@vientonorte.cl',
+  // Orden = agendas SPRINT_ARUMA (consulta 30 · foto 90 · rigger 120).
+  // bookingUrl por sesión: pegar calendar.app.google/… cuando existan (o solo global).
   sessionTypes: [
+    {
+      id: 'consulta',
+      name: 'Consulta inicial',
+      description:
+        'Conoce el espacio, resuelve dudas y define qué tipo de sesión necesitas. Sin compromiso.',
+      duration: '30 min',
+      priceLabel: 'Gratuita',
+      // bookingUrl: 'https://calendar.app.google/…',
+    },
     {
       id: 'foto-intima',
       name: 'Sesión fotográfica íntima',
@@ -85,6 +97,7 @@ export const brandConfig: BrandConfig = {
         'Ambiente seguro y personalizado. Fotografía auténtica adaptada a tu ritmo y comodidad.',
       duration: '90 min',
       priceLabel: 'Desde $120.000',
+      // bookingUrl: 'https://calendar.app.google/…',
     },
     {
       id: 'rigger-tantra',
@@ -94,14 +107,7 @@ export const brandConfig: BrandConfig = {
       duration: '120 min',
       priceLabel: 'Desde $180.000',
       featured: true,
-    },
-    {
-      id: 'consulta',
-      name: 'Consulta inicial',
-      description:
-        'Conoce el espacio, resuelve dudas y define qué tipo de sesión necesitas. Sin compromiso.',
-      duration: '30 min',
-      priceLabel: 'Gratuita',
+      // bookingUrl: 'https://calendar.app.google/…',
     },
   ],
   location: {

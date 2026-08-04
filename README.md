@@ -54,6 +54,9 @@ dobles reservas y envía confirmación y recordatorios al cliente.
 - La URL de la página de citas se administra en `lib/brand.config.ts`
   (`bookingUrl`) o desde la página `/brand` del sitio.
 - No se requieren credenciales ni variables de servidor.
+- **Sprint deploy (esta semana):** cuenta Google tercera **solo-ĀRŪḾA** como
+  anfitrión; `gaete.gaona` solo opera vía calendario compartido.
+  Checklist completo en [`SPRINT_ARUMA.md`](./SPRINT_ARUMA.md).
 
 ## Página /brand
 

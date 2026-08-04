@@ -26,11 +26,13 @@
 □ Footer links: focus ring visible
 ```
 
-## Pendiente owner
+## Pendiente owner → SPRINT ĀRŪḾA (deploy esta semana)
 
-1. Crear página nueva en Google Calendar Appointments
-2. Pegar URL en `/brand` → Editar marca
-3. Copiar JSON → commit en `lib/brand.config.ts` para prod estático
+Ver **`SPRINT_ARUMA.md`** (decisión bloqueada):
+
+1. Cuenta Google **tercera solo-ĀRŪḾA** (no gaete.gaona; no IGNIARUS/ANTAKUNZA)
+2. Calendario `ĀRŪḾA · Citas` + 3 agendas + share a gaete.gaona
+3. Pegar `calendar.app.google/…` en `lib/brand.config.ts` → build → deploy
 
 ## Archivos
 
