@@ -29,7 +29,7 @@
 | No usar para citas | `IGNIARUS`, `ANTAKUNZA` (quedan fuera de booking) |
 | Operador | `gaete.gaona` solo vía **calendario compartido** |
 | Producto | Google Calendar → Páginas de reserva (Appointment Schedule) |
-| Código | `bookingUrl` vacío hoy → CTA en “reconfiguración” + mailto `contacto@vientonorte.cl` |
+| Código | `bookingUrl` vacío hoy → CTA en “reconfiguración” + mailto `contacto@vientonorte.io` |
 
 ---
 

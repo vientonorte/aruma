@@ -13,7 +13,7 @@
 | Estado | UX |
 |---|---|
 | `bookingUrl` válido | CTA → Google Calendar |
-| URL vacía/inválida | Warning + mailto `contacto@vientonorte.cl` |
+| URL vacía/inválida | Warning + mailto `contacto@vientonorte.io` |
 | Owner | Instrucciones → `/brand` → Servicios y agenda |
 
 ## Checklist QA móvil

@@ -77,7 +77,8 @@ export const brandConfig: BrandConfig = {
   // Ver SPRINT_ARUMA.md → pegar calendar.app.google/… aquí (y/o por sessionTypes).
   bookingUrl: '',
   /** Respaldo mailto cuando bookingUrl está vacío — editable en /brand */
-  contactEmail: 'contacto@vientonorte.cl',
+  // SSOT con VN PUBLIC_CONTACT_EMAIL — .io tiene MX Cloudflare; .cl sin MX (QA 2026-08-04)
+  contactEmail: 'contacto@vientonorte.io',
   // Orden = agendas SPRINT_ARUMA (consulta 30 · foto 90 · rigger 120).
   // bookingUrl por sesión: pegar calendar.app.google/… cuando existan (o solo global).
   sessionTypes: [
