@@ -7,6 +7,8 @@ import { SITE_BASE_PATH } from "./lib/site-path";
 const nextConfig: NextConfig = {
   output: "export",
   basePath: SITE_BASE_PATH,
+  // GH Pages: /aruma/brand y /aruma/brand/ deben resolver (export brand/index.html)
+  trailingSlash: true,
   images: { unoptimized: true },
 };
 

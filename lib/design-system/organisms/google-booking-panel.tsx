@@ -20,6 +20,27 @@ import {
 import type { SessionType } from '@/lib/brand.config';
 import { withBasePath } from '@/lib/site-path';
 
+/** Mailto de respaldo — no expone inbox privado; solo canal público. */
+function buildReservationMailto(
+  email: string,
+  sessionName: string,
+): string {
+  const subject = `Reserva ĀRŪḾA — ${sessionName}`;
+  const body = [
+    'Hola Estudio ĀRŪḾA,',
+    '',
+    `Quiero reservar: ${sessionName}`,
+    'Fecha / franja preferida (CLT):',
+    'Nombre:',
+    'Teléfono o WhatsApp (opcional):',
+    'Notas / consentimiento / accesibilidad:',
+    '',
+    '— Enviado desde vientonorte.io/aruma',
+  ].join('\n');
+  const q = new URLSearchParams({ subject, body });
+  return `mailto:${email}?${q.toString()}`;
+}
+
 const GOOGLE_BENEFITS = [
   {
     icon: Calendar,
@@ -189,21 +210,38 @@ export function GoogleBookingPanel() {
 
       <div className="mt-6 flex flex-col items-center gap-3">
         {bookingReady ? (
-          <ButtonLink
-            variant="botanical"
-            size="lg"
-            href={bookingUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full sm:w-auto"
-          >
-            Continuar en Google Calendar
-          </ButtonLink>
+          <>
+            {/* Primario: agenda Google · mailto solo secundario */}
+            <ButtonLink
+              variant="botanical"
+              size="lg"
+              href={bookingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto"
+            >
+              Continuar en Google Calendar
+            </ButtonLink>
+            {contactEmail ? (
+              <a
+                href={buildReservationMailto(
+                  contactEmail,
+                  selectedSession?.name ?? 'Sesión',
+                )}
+                className="text-sm text-[#86868B] underline underline-offset-2 hover:text-[#F5F5F7]"
+              >
+                ¿Problemas con Calendar? Escribir a {contactEmail}
+              </a>
+            ) : null}
+          </>
         ) : contactEmail ? (
           <ButtonLink
             variant="botanical"
             size="lg"
-            href={`mailto:${contactEmail}?subject=${encodeURIComponent(`Reserva ĀRŪḾA — ${selectedSession?.name ?? 'Sesión'}`)}`}
+            href={buildReservationMailto(
+              contactEmail,
+              selectedSession?.name ?? 'Sesión',
+            )}
             className="w-full sm:w-auto"
           >
             Escribir para reservar
