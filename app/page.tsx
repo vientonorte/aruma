@@ -30,7 +30,7 @@ const PROCESS_STEPS = [
 
 export default function Home() {
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-4 py-8 sm:gap-16 sm:px-6 sm:py-12">
+    <main className="mx-auto flex w-full max-w-6xl flex-col gap-14 px-4 py-10 sm:gap-20 sm:px-6 sm:py-14 lg:px-8">
 
       <Hero
         title="ĀRŪḾA"
@@ -116,18 +116,24 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="reserva" aria-labelledby="reserva-heading">
-        <div className="mb-8 text-center">
+      <section
+        id="reserva"
+        aria-labelledby="reserva-heading"
+        className="scroll-mt-24 rounded-2xl border border-[#2F2F31]/80 bg-[#121214]/40 px-4 py-10 sm:scroll-mt-28 sm:px-8 sm:py-14"
+      >
+        <div className="mb-8 text-center sm:mb-10">
           <Overline>Da el primer paso</Overline>
           <Heading as="h2" id="reserva-heading" className="mt-2 text-2xl sm:text-3xl">
             Reserva tu sesión
           </Heading>
-          <Text size="sm" muted className="mt-2 mx-auto max-w-md">
-            Proceso seguro y confidencial. Tus datos se gestionan en Google Calendar con
-            confirmación y recordatorios automáticos.
+          <Text size="sm" muted className="mx-auto mt-3 max-w-md px-1">
+            Proceso seguro y confidencial. Con agenda Google activa eliges fecha en Calendar;
+            si aún se reconfigura, puedes escribir por correo con el detalle de la sesión.
           </Text>
         </div>
-        <GoogleBookingPanel />
+        <div className="mx-auto w-full max-w-2xl px-0 sm:px-2">
+          <GoogleBookingPanel />
+        </div>
       </section>
 
       <GoogleMapsSection />

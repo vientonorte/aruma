@@ -124,31 +124,31 @@ export function GoogleBookingPanel() {
   const contactEmail = config.contactEmail?.trim();
 
   return (
-    <Card variant="botanical" className="mx-auto max-w-2xl">
-      <div className="text-center">
+    <Card variant="botanical" className="mx-auto w-full max-w-2xl p-5 sm:p-8">
+      <div className="px-1 text-center sm:px-2">
         <Overline>Paso 1 · Elige tu sesión</Overline>
-        <Heading as="h3" className="mt-2 text-xl">
+        <Heading as="h3" className="mt-2 text-xl sm:text-2xl">
           Reserva con Google Calendar
         </Heading>
-        <Text size="sm" muted className="mx-auto mt-2 max-w-md">
-          Selecciona el tipo de sesión y continúa en la agenda segura de Google. Tus datos se
-          gestionan allí con confirmación y recordatorios automáticos.
+        <Text size="sm" muted className="mx-auto mt-3 max-w-md">
+          Selecciona el tipo de sesión. Si la agenda está activa, continúas en Google Calendar
+          (cupos reales + confirmación). Si no, el botón abre un correo de reserva listo.
         </Text>
       </div>
 
       {!bookingReady && (
-        <div className="mt-6">
+        <div className="mt-6 sm:mt-8">
           <StatusMessage
             type="warning"
-            title="Agenda en reconfiguración"
-            message="El enlace anterior de Google Calendar ya no es válido (la cita pudo haberse borrado o el vínculo cambió). Estamos activando una nueva página de reservas."
+            title="Agenda Google aún no conectada"
+            message="No hay bookingUrl de calendar.app.google en la marca. Por eso no se abre el calendario de citas: hay que crear la página de reservas ĀRŪḾA y pegar el link. Mientras tanto usa «Escribir para reservar» (mailto)."
           />
-          <div className="mt-4 rounded-xl border border-[#2F2F31] bg-[#0A0A0A]/60 p-4 text-left text-sm text-[#86868B]">
+          <div className="mt-4 rounded-xl border border-[#2F2F31] bg-[#0A0A0A]/60 p-4 text-left text-sm text-[#86868B] sm:p-5">
             <p className="flex items-start gap-2 font-medium text-[#F5F5F7]">
               <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[#F59E0B]" aria-hidden="true" />
-              Si eres el dueño del estudio
+              Dueño del estudio · checklist
             </p>
-            <ol className="mt-3 list-decimal space-y-2 pl-5">
+            <ol className="mt-3 list-decimal space-y-2.5 pl-5">
               <li>
                 Abre{' '}
                 <a
@@ -157,26 +157,30 @@ export function GoogleBookingPanel() {
                   rel="noopener noreferrer"
                   className="text-[#3D9461] underline hover:text-[#5DAF7D]"
                 >
-                  Google Calendar → Páginas de reserva de citas
-                </a>
+                  Google Calendar → Páginas de reserva
+                </a>{' '}
+                (cuenta marca ĀRŪḾA)
               </li>
-              <li>Crea una página nueva (duración, horarios, zona horaria Chile).</li>
-              <li>Copia el enlace <code className="text-[#F5F5F7]">calendar.app.google/…</code></li>
+              <li>Crea 3 agendas: 30 / 90 / 120 min · TZ America/Santiago.</li>
+              <li>
+                Copia <code className="rounded bg-[#1C1C1E] px-1 text-[#F5F5F7]">calendar.app.google/…</code>
+              </li>
               <li>
                 Pégalo en{' '}
                 <a
                   href={withBasePath('/brand')}
                   className="text-[#3D9461] underline hover:text-[#5DAF7D]"
                 >
-                  /aruma/brand → Editar marca → Servicios y agenda
-                </a>
+                  /aruma/brand → Servicios y agenda
+                </a>{' '}
+                o en <code className="text-[#F5F5F7]">lib/brand.config.ts</code>
               </li>
             </ol>
           </div>
         </div>
       )}
 
-      <fieldset className="mt-6 space-y-3" aria-label="Tipo de sesión">
+      <fieldset className="mt-6 space-y-3 sm:mt-8" aria-label="Tipo de sesión">
         <legend className="sr-only">Selecciona el tipo de sesión</legend>
         {config.sessionTypes.map((session) => (
           <SessionCard
