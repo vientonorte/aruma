@@ -14,6 +14,7 @@ const ARTES = [
     title: "Tatuaje",
     description:
       "Dibujo permanente sobre la piel, con motivos botánicos y tiempo para cuidar el proceso.",
+    price: "Flash desde $15.000",
     safety: "Material estéril, un solo uso",
     src: "/img/artes/01-tatuaje.webp",
     alt: "Ilustración de una tatuadora con delantal y guantes aplicando un helecho en un antebrazo, frente a láminas botánicas.",
@@ -105,6 +106,9 @@ export function ArtesSection() {
                 </Heading>
                 <p className="mt-2 text-sm leading-relaxed text-[#333333]">{arte.description}</p>
                 <div className="mt-auto pt-4">
+                  {"price" in arte ? (
+                    <p className="mb-3 text-sm font-medium text-[#245D3C]">{arte.price}</p>
+                  ) : null}
                   <p className="border-t border-[#245D3C]/35 pt-3 text-sm font-medium text-[#245D3C]">
                     <span className="sr-only">Cuidado: </span>
                     {arte.safety}
