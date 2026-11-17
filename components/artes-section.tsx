@@ -5,7 +5,7 @@ import { withBasePath } from "@/lib/site-path";
 
 /**
  * Las cuatro artes del estudio, en el orden del flyer.
- * Texto en crema: #333 y verde botánico #245D3C (AA). Nunca #3D9461 sobre #F5F0E8.
+ * Texto en crema #F5F0E8: negro #000 y gris #333 (Design System v1). Nunca #3D9461 sobre #F5F0E8.
  */
 const ARTES = [
   {
@@ -13,10 +13,19 @@ const ARTES = [
     number: "01",
     title: "Tatuaje",
     description:
-      "Dibujo permanente sobre la piel, con motivos botánicos y tiempo para cuidar el proceso.",
+      "Grabado estilo Ghibli · café, tech, física, ciencias",
+    price: "Flash $15.000",
     safety: "Material estéril, un solo uso",
-    src: "/img/artes/01-tatuaje.webp",
-    alt: "Ilustración de una tatuadora con delantal y guantes aplicando un helecho en un antebrazo, frente a láminas botánicas.",
+    src: "/img/artes/01-tatuaje-900.webp",
+    srcSet: [
+      "/img/artes/01-tatuaje-600.webp 600w",
+      "/img/artes/01-tatuaje-900.webp 900w",
+      "/img/artes/01-tatuaje-1200.webp 1200w",
+    ].join(", "),
+    sizes: "(min-width: 1024px) 28rem, (min-width: 640px) 50vw, 100vw",
+    width: 1200,
+    height: 1200,
+    alt: "Ilustración de un tatuador con delantal y guantes aplicando un helecho en un antebrazo, frente a láminas botánicas.",
   },
   {
     id: "shibari",
@@ -49,6 +58,15 @@ const ARTES = [
     alt: "Ilustración de un sillón tallado con un rollo de cuerda y guantes, junto a una mesa con vela, antifaz ornamental, llave y helechos.",
   },
 ] as const;
+function withSrcSet(srcSet: string) {
+  return srcSet
+    .split(",")
+    .map((entry) => {
+      const [path, descriptor] = entry.trim().split(/\s+/);
+      return `${withBasePath(path)} ${descriptor}`;
+    })
+    .join(", ");
+}
 
 export function ArtesSection() {
   return (
@@ -64,7 +82,7 @@ export function ArtesSection() {
             sigue la agenda del sitio.
           </Text>
         </div>
-        <figure className="overflow-hidden rounded-2xl border border-[#245D3C]/40 bg-[#F5F0E8]">
+        <figure className="overflow-hidden rounded-2xl border border-[#000000]/40 bg-[#F5F0E8]">
           <img
             src={withBasePath("/img/artes/hero-estudio.webp")}
             alt="Ilustración del estudio: un autómata con plantas sostiene musgo junto a un zorro, una cámara, un rollo de cuerda y una máquina de tatuar."
@@ -85,14 +103,16 @@ export function ArtesSection() {
             >
               <img
                 src={withBasePath(arte.src)}
+                srcSet={"srcSet" in arte ? withSrcSet(arte.srcSet) : undefined}
+                sizes={"sizes" in arte ? arte.sizes : undefined}
                 alt={arte.alt}
-                width={1200}
-                height={1200}
+                width={"width" in arte ? arte.width : 1200}
+                height={"height" in arte ? arte.height : 1200}
                 loading="lazy"
                 className="aspect-square w-full object-cover"
               />
               <div className="flex flex-1 flex-col p-5 sm:p-6">
-                <p className="text-sm font-semibold tracking-[0.22em] text-[#245D3C]">
+                <p className="text-sm font-semibold tracking-[0.22em] text-[#000000]">
                   <span className="sr-only">Módulo </span>
                   {arte.number}
                 </p>
@@ -105,7 +125,13 @@ export function ArtesSection() {
                 </Heading>
                 <p className="mt-2 text-sm leading-relaxed text-[#333333]">{arte.description}</p>
                 <div className="mt-auto pt-4">
-                  <p className="border-t border-[#245D3C]/35 pt-3 text-sm font-medium text-[#245D3C]">
+                  {"price" in arte ? (
+                    <p className="mb-3 text-sm font-medium text-[#000000]">
+                      <span className="sr-only">Precio: </span>
+                      {arte.price}
+                    </p>
+                  ) : null}
+                  <p className="border-t border-[#000000]/35 pt-3 text-sm font-medium text-[#000000]">
                     <span className="sr-only">Cuidado: </span>
                     {arte.safety}
                   </p>
@@ -117,7 +143,7 @@ export function ArtesSection() {
       </ul>
 
       <div className="mt-8 text-center sm:mt-10">
-        <ButtonLink href="#reserva" variant="botanical" size="lg">
+        <ButtonLink href="#reserva" variant="brand" size="lg">
           Reservar una sesión
         </ButtonLink>
       </div>
