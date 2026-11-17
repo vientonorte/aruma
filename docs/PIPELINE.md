@@ -29,6 +29,10 @@ Lo que protege el QA es el meta `robots` `noindex, nofollow` (lo pone Next y el 
 
 `/aruma/robots.txt` **no rige** el rastreo: los crawlers solo leen `https://vientonorte.io/robots.txt` (el del hub, en la raíz del dominio). **Nunca** añadir un `Disallow` de `/aruma/qa` (ni ningún otro) en el robots de la raíz. El `Disallow` de `/aruma/qa` que llegó a estar en el robots de este repo se sacó porque no tenía efecto y confundía. El `robots.txt` que el ensamblado deja en `/aruma/qa/robots.txt` es solo una convención; tampoco lo consultan los crawlers.
 
+## Riesgo: mismo origen
+
+`/aruma/qa/` comparte origen `vientonorte.io` con prod (cookies, localStorage, service worker), así que en qa no se guardan datos reales ni se registra un service worker con scope `/aruma/`. Al crear la rama `qa`, hay que protegerla (ver [Ramas y merge](#ramas-y-merge)). A largo plazo, evaluar un subdominio para QA.
+
 ## Ramas y merge
 
 - Feature: `feat/` o `fix/` (o `cursor/` si la abre un agente). El PR nace en **borrador**.
@@ -38,6 +42,12 @@ Lo que protege el QA es el meta `robots` `noindex, nofollow` (lo pone Next y el 
 - Rö hace QA humano en `/aruma/qa/`, da el OK en el chat de M5, y recién ahí va el squash a `main` con mensaje de alcance (qué entra, qué no, reviews, CI, OK de Rö con fecha y hora). Después, smoke en producción (abajo).
 - Sin merge, deploy ni push a `main` sin ese OK.
 - En precios flash no se usa la palabra «desde».
+
+## Rollback
+
+Si #27 se mergea con merge commit o fast-forward, el rollback es la rama `revert/pipeline-unico-pages-qa` (su árbol coincide con `main` `89af830`).
+
+Si #27 se mergea con squash, el rollback es `git revert <SHA del squash>` (no la rama `revert/pipeline-unico-pages-qa` ni el commit `33c5237`).
 
 ## Smoke de merge (producción)
 
