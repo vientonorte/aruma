@@ -17,7 +17,7 @@ const ARTES = [
     price: "Flash $15.000",
     safety: "Material estéril, un solo uso",
     src: "/img/artes/01-tatuaje.webp",
-    alt: "Ilustración de una tatuadora con delantal y guantes aplicando un helecho en un antebrazo, frente a láminas botánicas.",
+    alt: "Ilustración de un tatuador con delantal y guantes aplicando un helecho en un antebrazo, frente a láminas botánicas.",
   },
   {
     id: "shibari",
