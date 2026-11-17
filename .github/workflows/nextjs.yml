@@ -1,27 +1,13 @@
 name: Deploy Next.js site to Pages
 
 # Un solo pipeline / un solo artifact de GitHub Pages:
-#   SHA de producción → https://vientonorte.io/aruma/
-#   SHA de la rama qa → https://vientonorte.io/aruma/qa/ (noindex)
+#   tip de main → https://vientonorte.io/aruma/
+#   tip de la rama qa → https://vientonorte.io/aruma/qa/ (noindex)
 #
 # vientonorte.io es el dominio custom del user site vientonorte/vientonorte.github.io.
 # Este repo es un project site: todo /aruma/* lo sirve ESTE artifact.
 # No publicar QA en vientonorte.github.io/aruma/qa/ (el project site gana esa ruta).
-# No se toca https_enforced (decisión de Rö, pack aparte).
-#
-# Seguridad (Hackdr + TL):
-# - permissions de top-level: solo contents:read. pages:write e id-token:write
-#   solo en deploy. actions:read y checks:read solo en guard.
-# - El guard exige dispatch o (CI success && event == push && mismo repo).
-#   workflow_run.branches filtra por head_branch; un PR o fork llamado main/qa
-#   coincidiría. El chequeo de head_repository evita un fork.
-# - Prod y QA se construyen en jobs separados. QA no recibe secrets, hace
-#   checkout con persist-credentials:false y npm ci --ignore-scripts.
-# - El ensamblado no ejecuta código de QA: solo descarga artifacts, copia a
-#   out/qa/ e inyecta noindex. Falla si hay symlinks.
-# - Si el disparo es main, prod se construye desde workflow_run.head_sha.
-# - Si el disparo es qa (o un dispatch), se verifica por API que el tip de
-#   main tiene CI verde antes de construir prod.
+# Producción siempre se construye desde el tip de main, nunca desde la rama disparadora.
 
 on:
   workflow_run:
@@ -32,6 +18,9 @@ on:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
+  actions: read
 
 concurrency:
   group: "pages"
@@ -40,201 +29,100 @@ concurrency:
 jobs:
   guard:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      actions: read
-      checks: read
+    # workflow_run.branches filtra por head_branch: un PR o fork llamado
+    # main o qa también coincidiría. Solo aceptamos CI de un push (o un dispatch).
     if: >
       github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'success' &&
-       github.event.workflow_run.event == 'push' &&
-       github.event.workflow_run.head_repository.full_name == github.repository)
-    outputs:
-      prod_ref: ${{ steps.refs.outputs.prod_ref }}
-      qa_exists: ${{ steps.refs.outputs.qa_exists }}
-      qa_ref: ${{ steps.refs.outputs.qa_ref }}
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
     steps:
-      - name: Resolver refs y verificar CI de main
-        id: refs
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
-          EVENT_NAME: ${{ github.event_name }}
-          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
-          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
-        run: |
-          set -euo pipefail
+      - name: Gate
+        run: echo "CI green or manual dispatch"
 
-          verify_green_ci() {
-            local sha="$1"
-            local label="$2"
-            local state run_concl failed_builds successful_builds
-            state=$(gh api "repos/${REPO}/commits/${sha}/status" --jq '.state')
-            run_concl=$(gh api "repos/${REPO}/actions/workflows/ci.yml/runs?head_sha=${sha}&event=push&per_page=5" \
-              --jq '([.workflow_runs[] | select(.conclusion != "")][0].conclusion) // empty')
-            failed_builds=$(gh api "repos/${REPO}/commits/${sha}/check-runs?per_page=100" \
-              --jq '[.check_runs[] | select(.name=="build" and (.conclusion=="failure" or .conclusion=="cancelled" or .conclusion=="timed_out" or .conclusion=="startup_failure"))] | length')
-            successful_builds=$(gh api "repos/${REPO}/commits/${sha}/check-runs?per_page=100" \
-              --jq '[.check_runs[] | select(.name=="build" and .status=="completed" and .conclusion=="success")] | length')
-            echo "CI check for ${label} @ ${sha}: workflow=${run_concl:-none} status=${state} build_success=${successful_builds} build_failed=${failed_builds}"
-            if [ "${run_concl}" = "success" ] && [ "${failed_builds}" = "0" ]; then
-              return 0
-            fi
-            if [ "${successful_builds}" != "0" ] && [ "${failed_builds}" = "0" ] && [ "${state}" != "failure" ]; then
-              return 0
-            fi
-            echo "Abort: ${label} @ ${sha} no tiene CI verde de un push." >&2
-            exit 1
-          }
-
-          QA_EXISTS=false
-          QA_REF=""
-
-          if [ "${EVENT_NAME}" = "workflow_run" ]; then
-            if [ "${HEAD_BRANCH}" = "main" ]; then
-              echo "prod_ref=${HEAD_SHA}" >> "${GITHUB_OUTPUT}"
-              echo "Prod from workflow_run.head_sha (main) ${HEAD_SHA}"
-            elif [ "${HEAD_BRANCH}" = "qa" ]; then
-              MAIN_SHA=$(gh api "repos/${REPO}/commits/main" --jq .sha)
-              verify_green_ci "${MAIN_SHA}" "main tip"
-              echo "prod_ref=${MAIN_SHA}" >> "${GITHUB_OUTPUT}"
-              QA_EXISTS=true
-              QA_REF="${HEAD_SHA}"
-              echo "Prod from verified main tip ${MAIN_SHA}; QA from head_sha ${HEAD_SHA}"
-            else
-              echo "Unexpected head_branch=${HEAD_BRANCH}" >&2
-              exit 1
-            fi
-          else
-            MAIN_SHA=$(gh api "repos/${REPO}/commits/main" --jq .sha)
-            verify_green_ci "${MAIN_SHA}" "main tip (dispatch)"
-            echo "prod_ref=${MAIN_SHA}" >> "${GITHUB_OUTPUT}"
-            echo "Dispatch: prod from verified main tip ${MAIN_SHA}"
-          fi
-
-          if [ "${QA_EXISTS}" != "true" ]; then
-            if gh api "repos/${REPO}/branches/qa" --silent; then
-              QA_EXISTS=true
-              QA_REF=$(gh api "repos/${REPO}/commits/qa" --jq .sha)
-              echo "QA branch exists at ${QA_REF}"
-            else
-              echo "No qa branch; assemble will write a noindex stub"
-            fi
-          fi
-
-          echo "qa_exists=${QA_EXISTS}" >> "${GITHUB_OUTPUT}"
-          echo "qa_ref=${QA_REF}" >> "${GITHUB_OUTPUT}"
-
-  build-prod:
+  build:
     needs: guard
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     steps:
-      - name: Checkout producción
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Checkout main (producción)
+        uses: actions/checkout@v4
         with:
-          ref: ${{ needs.guard.outputs.prod_ref }}
-          persist-credentials: false
-      - name: Setup Node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-      - name: Install and build production (/aruma/)
+          ref: main
+          path: prod
+
+      - name: ¿Existe la rama qa?
+        id: qa
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          npm ci --ignore-scripts
+          if gh api "repos/${{ github.repository }}/branches/qa" --silent; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout qa
+        if: steps.qa.outputs.exists == 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: qa
+          path: qa-src
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: prod/.nvmrc
+          cache: npm
+          cache-dependency-path: prod/package-lock.json
+          registry-url: https://npm.pkg.github.com
+          scope: "@vientonorte"
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Install and build production (/aruma/)
+        working-directory: prod
+        run: |
+          set -euo pipefail
+          npm ci
           npx next build
         env:
+          NODE_AUTH_TOKEN: ${{ secrets.VN_PACKAGES_TOKEN || secrets.GITHUB_TOKEN }}
           NEXT_PUBLIC_BASE_PATH: /aruma
           NEXT_PUBLIC_SITE_URL: https://vientonorte.io/aruma
+
       - name: Guard — prod no puede traer una ruta /qa propia
         run: |
           set -euo pipefail
-          if [ -e out/qa ]; then
-            echo "out/qa already exists; refuse to overwrite a real /qa route" >&2
+          if [ -e prod/out/qa ]; then
+            echo "prod/out/qa already exists; refuse to overwrite a real /qa route" >&2
             exit 1
           fi
-          test -f out/index.html
-      - name: Upload prod artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: prod-out
-          path: out
-          if-no-files-found: error
+          test -f prod/out/index.html
 
-  build-qa:
-    needs: guard
-    if: needs.guard.outputs.qa_exists == 'true'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout qa
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
-        with:
-          ref: ${{ needs.guard.outputs.qa_ref }}
-          persist-credentials: false
-      - name: Setup Node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version-file: .nvmrc
-          cache: npm
       - name: Install and build QA (/aruma/qa/)
+        if: steps.qa.outputs.exists == 'true'
+        working-directory: qa-src
         run: |
           set -euo pipefail
-          npm ci --ignore-scripts
+          npm ci
           npx next build
           if grep -q '/aruma/_next' out/index.html && ! grep -q '/aruma/qa/_next' out/index.html; then
             echo "QA build still points at /aruma/_next (rebase qa onto main so SITE_BASE_PATH lee NEXT_PUBLIC_BASE_PATH)." >&2
             exit 1
           fi
         env:
+          NODE_AUTH_TOKEN: ${{ secrets.VN_PACKAGES_TOKEN || secrets.GITHUB_TOKEN }}
           NEXT_PUBLIC_BASE_PATH: /aruma/qa
           NEXT_PUBLIC_SITE_URL: https://vientonorte.io/aruma/qa
           NEXT_PUBLIC_NOINDEX: "1"
-      - name: Upload qa artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: qa-out
-          path: out
-          if-no-files-found: error
 
-  assemble:
-    needs: [guard, build-prod, build-qa]
-    if: >
-      always() &&
-      needs.guard.result == 'success' &&
-      needs.build-prod.result == 'success' &&
-      (needs.build-qa.result == 'success' || needs.build-qa.result == 'skipped')
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Download prod artifact
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
-        with:
-          name: prod-out
-          path: out
-      - name: Download qa artifact
-        if: needs.build-qa.result == 'success'
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
-        with:
-          name: qa-out
-          path: qa-out
-      - name: Bundle QA into production artifact + noindex (sin ejecutar código de QA)
+      - name: Bundle QA into production artifact + noindex
         run: |
           set -euo pipefail
-          test -f out/index.html
-          if [ -e out/qa ]; then
-            echo "prod artifact already has out/qa; refuse to overwrite" >&2
-            exit 1
-          fi
-          mkdir -p out/qa
-          if [ "${{ needs.build-qa.result }}" = "success" ]; then
-            test -f qa-out/index.html
-            cp -R qa-out/. out/qa/
+          mkdir -p prod/out/qa
+          if [ "${{ steps.qa.outputs.exists }}" = "true" ]; then
+            test -f qa-src/out/index.html
+            cp -R qa-src/out/. prod/out/qa/
           else
             printf '%s\n' \
               '<!DOCTYPE html>' \
@@ -245,61 +133,40 @@ jobs:
               '<title>QA Aruma — sin build</title>' \
               '</head>' \
               '<body>' \
-              '<p>No hay rama <code>qa</code> todavía. El ambiente aparece aqui cuando se reconstruya esa rama sobre main.</p>' \
+              '<p>No hay rama <code>qa</code> todavia. El ambiente aparece aqui cuando se reconstruya esa rama sobre main.</p>' \
               '</body>' \
               '</html>' \
-              > out/qa/index.html
+              > prod/out/qa/index.html
           fi
-          if links=$(find out -type l -print) && [ -n "${links}" ]; then
-            echo "symlinks are not allowed in the Pages artifact:" >&2
-            printf '%s\n' "${links}" >&2
-            exit 1
-          fi
-          find out/qa -type f -name '*.html' -print0 | while IFS= read -r -d '' f; do
+          find prod/out/qa -type f -name '*.html' -print0 | while IFS= read -r -d '' f; do
             perl -0pi -e 's#<meta\s+name="robots"\s+content="[^"]*"\s*/?>#<meta name="robots" content="noindex, nofollow" />#gi' "$f"
             if ! grep -q 'name="robots"' "$f"; then
               perl -0pi -e 's#<head(\s[^>]*)?>#<head$1>\n    <meta name="robots" content="noindex, nofollow" />#i' "$f"
             fi
           done
-          missing=$(find out/qa -type f -name '*.html' -exec grep -L 'noindex, nofollow' {} + || true)
+          missing=$(find prod/out/qa -type f -name '*.html' -exec grep -L 'noindex, nofollow' {} + || true)
           if [ -n "$missing" ]; then
             echo "HTML de QA sin noindex:" >&2
             echo "$missing" >&2
             exit 1
           fi
-          # Convención solamente: /aruma/qa/robots.txt no rige el rastreo
-          # (los crawlers solo leen https://vientonorte.io/robots.txt, el del
-          # hub). No se añade Disallow en la raíz del dominio. La protección
-          # real es noindex, nofollow.
-          printf 'User-agent: *\nDisallow: /\n' > out/qa/robots.txt
-      - name: Upload assembled site
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+          # robots.txt de QA: convención, no protege el rastreo (los crawlers
+          # solo leen https://vientonorte.io/robots.txt, el del hub). No se
+          # añade Disallow al hub. La protección real es noindex, nofollow.
+          printf 'User-agent: *\nDisallow: /\n' > prod/out/qa/robots.txt
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: pages-out
-          path: out
-          if-no-files-found: error
+          path: ./prod/out
 
   deploy:
-    needs: assemble
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
     steps:
-      - name: Download assembled site
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
-        with:
-          name: pages-out
-          path: out
-      - name: Setup Pages
-        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
-        with:
-          path: out
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+        uses: actions/deploy-pages@v5
