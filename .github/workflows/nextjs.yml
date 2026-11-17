@@ -20,15 +20,8 @@ name: Deploy Next.js site to Pages
 # - El ensamblado no ejecuta código de QA: solo descarga artifacts, copia a
 #   out/qa/ e inyecta noindex. Falla si hay symlinks.
 # - Si el disparo es main, prod se construye desde workflow_run.head_sha.
-#   Si ese SHA ya no es el tip de main, se omite el publish (un CI tardío
-#   de un commit viejo no debe pisar uno más nuevo).
 # - Si el disparo es qa (o un dispatch), se verifica por API que el tip de
 #   main tiene CI verde antes de construir prod.
-# - Si el disparo es main o un dispatch, también se verifica el tip de qa;
-#   si no está verde, assemble deja el stub noindex en vez de publicarlo.
-# - assemble corre con always() si build-qa está skipped (stub noindex).
-# - deploy usa always() && assemble==success para no quedar skipped cuando
-#   no hay rama qa (actions/runner#491).
 
 on:
   workflow_run:
@@ -60,7 +53,6 @@ jobs:
       prod_ref: ${{ steps.refs.outputs.prod_ref }}
       qa_exists: ${{ steps.refs.outputs.qa_exists }}
       qa_ref: ${{ steps.refs.outputs.qa_ref }}
-      skip_publish: ${{ steps.refs.outputs.skip_publish }}
     steps:
       - name: Resolver refs y verificar CI de main
         id: refs
@@ -91,28 +83,20 @@ jobs:
             if [ "${successful_builds}" != "0" ] && [ "${failed_builds}" = "0" ] && [ "${state}" != "failure" ]; then
               return 0
             fi
-            echo "${label} @ ${sha} no tiene CI verde de un push." >&2
-            return 1
+            echo "Abort: ${label} @ ${sha} no tiene CI verde de un push." >&2
+            exit 1
           }
 
           QA_EXISTS=false
           QA_REF=""
-          SKIP_PUBLISH=false
 
           if [ "${EVENT_NAME}" = "workflow_run" ]; then
             if [ "${HEAD_BRANCH}" = "main" ]; then
-              MAIN_TIP=$(gh api "repos/${REPO}/commits/main" --jq .sha)
-              if [ "${HEAD_SHA}" != "${MAIN_TIP}" ]; then
-                echo "Skip publish: workflow_run.head_sha ${HEAD_SHA} ya no es el tip de main (${MAIN_TIP}). Un CI tardío no debe publicar un commit viejo."
-                SKIP_PUBLISH=true
-                echo "prod_ref=${HEAD_SHA}" >> "${GITHUB_OUTPUT}"
-              else
-                echo "prod_ref=${HEAD_SHA}" >> "${GITHUB_OUTPUT}"
-                echo "Prod from workflow_run.head_sha (main) ${HEAD_SHA}"
-              fi
+              echo "prod_ref=${HEAD_SHA}" >> "${GITHUB_OUTPUT}"
+              echo "Prod from workflow_run.head_sha (main) ${HEAD_SHA}"
             elif [ "${HEAD_BRANCH}" = "qa" ]; then
               MAIN_SHA=$(gh api "repos/${REPO}/commits/main" --jq .sha)
-              verify_green_ci "${MAIN_SHA}" "main tip" || { echo "Abort: main tip sin CI verde." >&2; exit 1; }
+              verify_green_ci "${MAIN_SHA}" "main tip"
               echo "prod_ref=${MAIN_SHA}" >> "${GITHUB_OUTPUT}"
               QA_EXISTS=true
               QA_REF="${HEAD_SHA}"
@@ -123,22 +107,16 @@ jobs:
             fi
           else
             MAIN_SHA=$(gh api "repos/${REPO}/commits/main" --jq .sha)
-            verify_green_ci "${MAIN_SHA}" "main tip (dispatch)" || { echo "Abort: main tip (dispatch) sin CI verde." >&2; exit 1; }
+            verify_green_ci "${MAIN_SHA}" "main tip (dispatch)"
             echo "prod_ref=${MAIN_SHA}" >> "${GITHUB_OUTPUT}"
             echo "Dispatch: prod from verified main tip ${MAIN_SHA}"
           fi
 
-          if [ "${SKIP_PUBLISH}" != "true" ] && [ "${QA_EXISTS}" != "true" ]; then
+          if [ "${QA_EXISTS}" != "true" ]; then
             if gh api "repos/${REPO}/branches/qa" --silent; then
+              QA_EXISTS=true
               QA_REF=$(gh api "repos/${REPO}/commits/qa" --jq .sha)
-              if verify_green_ci "${QA_REF}" "qa tip"; then
-                QA_EXISTS=true
-                echo "QA branch exists at ${QA_REF} with green CI"
-              else
-                QA_EXISTS=false
-                QA_REF=""
-                echo "QA tip no tiene CI verde; assemble dejará el stub noindex"
-              fi
+              echo "QA branch exists at ${QA_REF}"
             else
               echo "No qa branch; assemble will write a noindex stub"
             fi
@@ -146,11 +124,9 @@ jobs:
 
           echo "qa_exists=${QA_EXISTS}" >> "${GITHUB_OUTPUT}"
           echo "qa_ref=${QA_REF}" >> "${GITHUB_OUTPUT}"
-          echo "skip_publish=${SKIP_PUBLISH}" >> "${GITHUB_OUTPUT}"
 
   build-prod:
     needs: guard
-    if: needs.guard.outputs.skip_publish != 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -190,7 +166,7 @@ jobs:
 
   build-qa:
     needs: guard
-    if: needs.guard.outputs.qa_exists == 'true' && needs.guard.outputs.skip_publish != 'true'
+    if: needs.guard.outputs.qa_exists == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -204,6 +180,7 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: .nvmrc
+          cache: npm
       - name: Install and build QA (/aruma/qa/)
         run: |
           set -euo pipefail
@@ -304,7 +281,6 @@ jobs:
 
   deploy:
     needs: assemble
-    if: always() && needs.assemble.result == 'success'
     runs-on: ubuntu-latest
     permissions:
       pages: write
