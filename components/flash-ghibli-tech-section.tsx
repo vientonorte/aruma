@@ -34,9 +34,8 @@ const FLASHES = [
   },
 ] as const;
 
-function srcFor(file: string, width?: number) {
-  const name = width ? `${file}-${width}.webp` : `${file}.webp`;
-  return withBasePath(`/img/flash-ghibli-tech/${name}`);
+function srcFor(file: string, width: number) {
+  return withBasePath(`/img/flash-ghibli-tech/${file}-${width}.webp`);
 }
 
 function srcSet(file: string) {
@@ -70,7 +69,7 @@ export function FlashGhibliTechSection() {
               className="flex h-full scroll-mt-24 flex-col overflow-hidden rounded-2xl bg-[#F5F0E8] text-[#333333]"
             >
               <img
-                src={srcFor(flash.file)}
+                src={srcFor(flash.file, 864)}
                 srcSet={srcSet(flash.file)}
                 sizes="(min-width: 1024px) 420px, (min-width: 640px) 50vw, 100vw"
                 alt={flash.alt}
@@ -99,6 +98,7 @@ export function FlashGhibliTechSection() {
                     className="w-full"
                   >
                     Reservar una sesión
+                    <span className="sr-only"> {flash.title}</span>
                   </ButtonLink>
                 </div>
               </div>

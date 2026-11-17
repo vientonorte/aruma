@@ -16,7 +16,15 @@ const ARTES = [
       "Grabado estilo Ghibli · café, tech, física, ciencias",
     price: "Flash $15.000",
     safety: "Material estéril, un solo uso",
-    src: "/img/artes/01-tatuaje.webp",
+    src: "/img/artes/01-tatuaje-900.webp",
+    srcSet: [
+      "/img/artes/01-tatuaje-600.webp 600w",
+      "/img/artes/01-tatuaje-900.webp 900w",
+      "/img/artes/01-tatuaje-1200.webp 1200w",
+    ].join(", "),
+    sizes: "(min-width: 1024px) 28rem, (min-width: 640px) 50vw, 100vw",
+    width: 1200,
+    height: 1200,
     alt: "Ilustración de un tatuador con delantal y guantes aplicando un helecho en un antebrazo, frente a láminas botánicas.",
   },
   {
@@ -50,6 +58,15 @@ const ARTES = [
     alt: "Ilustración de un sillón tallado con un rollo de cuerda y guantes, junto a una mesa con vela, antifaz ornamental, llave y helechos.",
   },
 ] as const;
+function withSrcSet(srcSet: string) {
+  return srcSet
+    .split(",")
+    .map((entry) => {
+      const [path, descriptor] = entry.trim().split(/\s+/);
+      return `${withBasePath(path)} ${descriptor}`;
+    })
+    .join(", ");
+}
 
 export function ArtesSection() {
   return (
@@ -86,9 +103,11 @@ export function ArtesSection() {
             >
               <img
                 src={withBasePath(arte.src)}
+                srcSet={"srcSet" in arte ? withSrcSet(arte.srcSet) : undefined}
+                sizes={"sizes" in arte ? arte.sizes : undefined}
                 alt={arte.alt}
-                width={1200}
-                height={1200}
+                width={"width" in arte ? arte.width : 1200}
+                height={"height" in arte ? arte.height : 1200}
                 loading="lazy"
                 className="aspect-square w-full object-cover"
               />
