@@ -27,18 +27,27 @@ const SHOW_STUDIO_SETUP = process.env.NODE_ENV !== 'production';
 function buildReservationMailto(
   email: string,
   sessionName: string,
+  duration?: string,
 ): string {
-  const subject = `Reserva ĀRŪḾA — ${sessionName}`;
+  const sesion = duration ? `${sessionName} (${duration})` : sessionName;
+  const subject = `Reserva en ARUMA: ${sessionName}`;
   const body = [
-    'Hola Estudio ĀRŪḾA,',
+    'Hola, equipo de ARUMA:',
     '',
-    `Quiero reservar: ${sessionName}`,
-    'Fecha / franja preferida (CLT):',
-    'Nombre:',
-    'Teléfono o WhatsApp (opcional):',
-    'Notas / consentimiento / accesibilidad:',
+    `Me gustaría reservar una ${sesion}.`,
     '',
-    '— Enviado desde vientonorte.io/aruma',
+    'Les dejo mis datos para coordinar:',
+    '',
+    '- Nombre:',
+    '- Días y horarios que me acomodan:',
+    '- WhatsApp o teléfono (opcional):',
+    '- Idea o referencia (zona, tamaño, estilo):',
+    '- Algo que deban saber (salud, alergias, accesibilidad):',
+    '',
+    'Gracias, quedo a la espera de su respuesta.',
+    '',
+    'Saludos,',
+    '',
   ].join('\r\n');
   // RFC 6068: espacios como %20, no '+'. URLSearchParams usa '+' y los
   // clientes de correo lo muestran literal («Hola+Estudio»).
@@ -234,7 +243,8 @@ export function GoogleBookingPanel() {
               <a
                 href={buildReservationMailto(
                   contactEmail,
-                  selectedSession?.name ?? 'Sesión',
+                  selectedSession?.name ?? 'sesión',
+                  selectedSession?.duration,
                 )}
                 className="text-sm text-[#86868B] underline underline-offset-2 hover:text-[#F5F5F7]"
               >
@@ -248,7 +258,8 @@ export function GoogleBookingPanel() {
             size="lg"
             href={buildReservationMailto(
               contactEmail,
-              selectedSession?.name ?? 'Sesión',
+              selectedSession?.name ?? 'sesión',
+                  selectedSession?.duration,
             )}
             className="w-full sm:w-auto"
           >
