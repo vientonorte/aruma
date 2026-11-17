@@ -18,7 +18,7 @@ const sections = [
   },
   {
     title: "Uso de la información",
-    body: "Usamos tus datos de contacto exclusivamente para coordinar, confirmar o reagendar tu sesión fotográfica. No compartimos tu información con terceros ni la usamos con fines publicitarios.",
+    body: "Usamos tus datos de contacto exclusivamente para coordinar, confirmar o reagendar tu sesión — tatuaje, shibari, fotografía o sesión dom. No compartimos tu información con terceros ni la usamos con fines publicitarios.",
   },
   {
     title: "Fotografías y consentimiento",

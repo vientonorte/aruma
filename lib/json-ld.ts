@@ -4,7 +4,7 @@ import { isValidBookingUrl } from './brand-storage';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://vientonorte.github.io/aruma';
 const SITE_DESCRIPTION =
-  'Espacio íntimo y seguro para sesiones fotográficas auténticas. Reserva online en segundos, con total privacidad y protección de tus datos.';
+  'Tatuaje, shibari, fotografía y sesiones dom en un espacio cuidado. Reserva online, con acuerdos claros y protección de tus datos.';
 
 export function buildLocalBusinessJsonLd() {
   const { location, sessionTypes } = brandConfig;
@@ -92,7 +92,7 @@ export function buildWebSiteJsonLd() {
       },
       result: {
         '@type': 'Reservation',
-        name: 'Reserva de sesión fotográfica',
+        name: 'Reserva de sesión',
       },
     };
   }

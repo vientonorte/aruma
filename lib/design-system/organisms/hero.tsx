@@ -7,7 +7,6 @@
 'use client';
 
 import React from 'react';
-import { m } from 'framer-motion';
 import { Heading, Text } from '../atoms/typography';
 import { Button, ButtonLink, type ButtonVariant } from '../atoms/button';
 import { BotanicalBackground } from '../patterns/botanical';
@@ -59,48 +58,26 @@ export function Hero({
 
       <div className="relative z-10 mx-auto max-w-3xl text-center">
         {subtitle && (
-          <m.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-xs uppercase tracking-[0.24em] text-[#86868B]"
-          >
+          <p className="text-xs uppercase tracking-[0.24em] text-[#86868B]">
             {subtitle}
-          </m.p>
+          </p>
         )}
 
-        <m.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          <Heading as="h1" brand className="mt-4 text-4xl sm:text-5xl lg:text-6xl">
-            {title}
-          </Heading>
-        </m.div>
+        <Heading as="h1" brand className="mt-4 text-4xl sm:text-5xl lg:text-6xl">
+          {title}
+        </Heading>
 
-        <m.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <Text size="lg" muted className="mt-6 max-w-2xl mx-auto">
-            {description}
-          </Text>
-        </m.div>
+        <Text size="lg" muted className="mt-6 max-w-2xl mx-auto">
+          {description}
+        </Text>
 
         {(primaryAction || secondaryAction) && (
-          <m.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4"
-          >
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             {primaryAction && (
               <HeroActionButton action={primaryAction} variant={isBotanical ? 'botanical' : 'primary'} />
             )}
             {secondaryAction && <HeroActionButton action={secondaryAction} variant="ghost" />}
-          </m.div>
+          </div>
         )}
       </div>
     </section>

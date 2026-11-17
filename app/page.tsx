@@ -1,6 +1,5 @@
 import {
   Hero,
-  BentoGrid,
   Card,
   Heading,
   Text,
@@ -9,22 +8,23 @@ import {
   GoogleMapsSection,
   GoogleFeaturesStrip,
 } from "@/lib/design-system";
+import { ArtesSection } from "@/components/artes-section";
 
 const PROCESS_STEPS = [
   {
     step: '01',
-    title: 'Elige tu sesión',
-    description: 'Selecciona el tipo de experiencia y abre la agenda de Google con cupos reales.',
+    title: 'Elige tu práctica',
+    description: 'Tatuaje, shibari, fotografía o sesión dom. Abre la agenda y reserva el cupo.',
   },
   {
     step: '02',
-    title: 'Vive la experiencia',
-    description: 'Relájate en un espacio diseñado para ti. Sin prisas, sin poses forzadas.',
+    title: 'Acuerdos antes',
+    description: 'Límites, consentimiento y cuidados quedan claros antes de empezar.',
   },
   {
     step: '03',
-    title: 'Recibe tus fotos',
-    description: 'Descarga tu galería editada profesionalmente en 72 horas, lista para compartir.',
+    title: 'La sesión',
+    description: 'Un espacio sin prisas. Si la práctica incluye fotografía, la galería editada llega en 72 horas.',
   },
 ];
 
@@ -35,54 +35,15 @@ export default function Home() {
       <Hero
         title="ĀRŪḾA"
         subtitle="Espacio para la Exploración Visual"
-        description="Reserva tu sesión en un ambiente íntimo diseñado para que te sientas cómoda/o. Fotografía auténtica, en tus términos y con total protección de tus datos."
+        description="Tatuaje, shibari, fotografía y sesiones dom en un espacio cuidado. Reserva en tus términos, con acuerdos claros y protección de tus datos."
         variant="botanical"
         primaryAction={{ label: "Reservar ahora", href: "#reserva" }}
-        secondaryAction={{ label: "Ver servicios", href: "#servicios" }}
+        secondaryAction={{ label: "Ver las cuatro artes", href: "#servicios" }}
       />
 
       <GoogleFeaturesStrip />
 
-      <section id="servicios" aria-labelledby="servicios-heading">
-        <div className="mb-8 text-center">
-          <Overline>Nuestras líneas de negocio</Overline>
-          <Heading as="h2" id="servicios-heading" className="mt-2 text-2xl sm:text-3xl">
-            Un espacio hecho para ti
-          </Heading>
-        </div>
-        <BentoGrid
-          columns={4}
-          items={[
-            {
-              icon: <LeafIcon />,
-              title: "Tu espacio, tus reglas",
-              description: "Sesiones en un ambiente íntimo y seguro, completamente adaptadas a lo que necesitas y a tu ritmo.",
-              span: 2,
-              variant: "botanical",
-            },
-            {
-              icon: <CalendarIcon />,
-              title: "Agenda Google en vivo",
-              description: "Disponibilidad real, confirmación por Gmail y recordatorios automáticos — sin llamadas ni esperas.",
-              span: 1,
-            },
-            {
-              icon: <DownloadIcon />,
-              title: "Entrega en 72 h",
-              description: "Galería editada profesionalmente en 72 horas, lista para compartir o imprimir.",
-              span: 1,
-            },
-            {
-              icon: <KnotIcon />,
-              title: "Exploración Rigger / Tantra",
-              description:
-                "⭐ Sesión signature — Shibari y exploración corporal guiada en un entorno de respeto y consentimiento absoluto.",
-              span: 4,
-              variant: "botanical",
-            },
-          ]}
-        />
-      </section>
+      <ArtesSection />
 
       <section id="proceso" aria-labelledby="proceso-heading">
         <div className="mb-8 text-center">
@@ -139,38 +100,5 @@ export default function Home() {
       <GoogleMapsSection />
 
     </main>
-  );
-}
-
-function LeafIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M17 8C8 10 5.9 16.17 3.82 19.82L5.71 21l1-1.23A4.49 4.49 0 008 20C12 20 20 19 20 10c0-5.5-3-8-3-8zm-2.55 8.89A13.79 13.79 0 018.64 18c.77-1.69 2.5-4.53 6.36-6a.65.65 0 01.45 1.2A12.5 12.5 0 0014.45 16.89z" />
-    </svg>
-  );
-}
-
-function CalendarIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2zm0 16H5V10h14v10zM5 8V6h14v2H5z" />
-    </svg>
-  );
-}
-
-function KnotIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-      <path d="M7 4c4 0 10 3 10 8s-6 8-10 8" strokeLinecap="round" />
-      <path d="M17 4C13 4 7 7 7 12s6 8 10 8" strokeLinecap="round" opacity="0.6" />
-    </svg>
-  );
-}
-
-function DownloadIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
-    </svg>
   );
 }
