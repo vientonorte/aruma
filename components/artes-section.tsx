@@ -107,7 +107,10 @@ export function ArtesSection() {
                 <p className="mt-2 text-sm leading-relaxed text-[#333333]">{arte.description}</p>
                 <div className="mt-auto pt-4">
                   {"price" in arte ? (
-                    <p className="mb-3 text-sm font-medium text-[#245D3C]">{arte.price}</p>
+                    <p className="mb-3 text-sm font-medium text-[#245D3C]">
+                      <span className="sr-only">Precio: </span>
+                      {arte.price}
+                    </p>
                   ) : null}
                   <p className="border-t border-[#245D3C]/35 pt-3 text-sm font-medium text-[#245D3C]">
                     <span className="sr-only">Cuidado: </span>
