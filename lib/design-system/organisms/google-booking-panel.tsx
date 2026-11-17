@@ -41,8 +41,8 @@ function buildReservationMailto(
     '- Nombre:',
     '- Días y horarios que me acomodan:',
     '- WhatsApp o teléfono (opcional):',
-    '- Idea o referencia (zona, tamaño, estilo):',
-    '- Algo que deban saber (salud, alergias, accesibilidad):',
+    '- Idea o referencia (lo que te gustaría explorar o fotografiar):',
+    '- Algo que debamos saber (salud, límites, accesibilidad):',
     '',
     'Gracias, quedo a la espera de su respuesta.',
     '',
@@ -259,7 +259,7 @@ export function GoogleBookingPanel() {
             href={buildReservationMailto(
               contactEmail,
               selectedSession?.name ?? 'sesión',
-                  selectedSession?.duration,
+              selectedSession?.duration,
             )}
             className="w-full sm:w-auto"
           >
