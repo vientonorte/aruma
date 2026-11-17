@@ -80,15 +80,6 @@ npm run build
 Genera el sitio estático en `out/` (configurado con `output: "export"` y
 `basePath: "/aruma"` para GitHub Pages).
 
-## Publicación
-
-Un solo pipeline en GitHub Pages (sin previews de Vercel):
-
-- Producción: <https://vientonorte.io/aruma/>, solo desde `main`.
-- QA abierto (noindex): <https://vientonorte.io/aruma/qa/>, desde la rama `qa`.
-
-Detalle, reglas de ramas y el ciclo de merge: [`docs/PIPELINE.md`](./docs/PIPELINE.md).
-
 ## Lint
 
 ```bash

@@ -1,166 +1,46 @@
 name: Deploy Next.js site to Pages
 
-# Un solo pipeline / un solo artifact de GitHub Pages:
-#   tip de main → https://vientonorte.io/aruma/
-#   tip de la rama qa → https://vientonorte.io/aruma/qa/ (noindex)
-#
-# vientonorte.io es el dominio custom del user site vientonorte/vientonorte.github.io.
-# Este repo es un project site: todo /aruma/* lo sirve ESTE artifact.
-# No publicar QA en vientonorte.github.io/aruma/qa/ (el project site gana esa ruta).
-# Producción siempre se construye desde el tip de main, nunca desde la rama disparadora.
-
 on:
-  workflow_run:
-    workflows: ["CI"]
-    types: [completed]
-    branches: [main, qa]
+  push:
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
-  actions: read
 
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  guard:
-    runs-on: ubuntu-latest
-    if: >
-      github.event_name == 'workflow_dispatch' ||
-      github.event.workflow_run.conclusion == 'success'
-    steps:
-      - name: Gate
-        run: echo "CI green or manual dispatch"
-
   build:
-    needs: guard
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout main (producción)
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: main
-          path: prod
-
-      - name: ¿Existe la rama qa?
-        id: qa
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          if gh api "repos/${{ github.repository }}/branches/qa" --silent; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Checkout qa
-        if: steps.qa.outputs.exists == 'true'
-        uses: actions/checkout@v4
-        with:
-          ref: qa
-          path: qa-src
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version-file: prod/.nvmrc
+          node-version-file: .nvmrc
           cache: npm
-          cache-dependency-path: prod/package-lock.json
           registry-url: https://npm.pkg.github.com
           scope: "@vientonorte"
-
       - name: Setup Pages
         uses: actions/configure-pages@v5
-
-      - name: Install and build production (/aruma/)
-        working-directory: prod
-        run: |
-          set -euo pipefail
-          npm ci
-          npx next build
+      - name: Install dependencies
+        run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.VN_PACKAGES_TOKEN || secrets.GITHUB_TOKEN }}
-          NEXT_PUBLIC_BASE_PATH: /aruma
-          NEXT_PUBLIC_SITE_URL: https://vientonorte.io/aruma
-
-      - name: Guard — prod no puede traer una ruta /qa propia
-        run: |
-          set -euo pipefail
-          if [ -e prod/out/qa ]; then
-            echo "prod/out/qa already exists; refuse to overwrite a real /qa route" >&2
-            exit 1
-          fi
-          test -f prod/out/index.html
-
-      - name: Install and build QA (/aruma/qa/)
-        if: steps.qa.outputs.exists == 'true'
-        working-directory: qa-src
-        run: |
-          set -euo pipefail
-          npm ci
-          npx next build
-          if grep -q '/aruma/_next' out/index.html && ! grep -q '/aruma/qa/_next' out/index.html; then
-            echo "QA build still points at /aruma/_next (rebase qa onto main so SITE_BASE_PATH lee NEXT_PUBLIC_BASE_PATH)." >&2
-            exit 1
-          fi
+      - name: Build with Next.js
+        run: npx next build
         env:
           NODE_AUTH_TOKEN: ${{ secrets.VN_PACKAGES_TOKEN || secrets.GITHUB_TOKEN }}
-          NEXT_PUBLIC_BASE_PATH: /aruma/qa
-          NEXT_PUBLIC_SITE_URL: https://vientonorte.io/aruma/qa
-          NEXT_PUBLIC_NOINDEX: "1"
-
-      - name: Bundle QA into production artifact + noindex
-        run: |
-          set -euo pipefail
-          mkdir -p prod/out/qa
-          if [ "${{ steps.qa.outputs.exists }}" = "true" ]; then
-            test -f qa-src/out/index.html
-            cp -R qa-src/out/. prod/out/qa/
-          else
-            printf '%s\n' \
-              '<!DOCTYPE html>' \
-              '<html lang="es">' \
-              '<head>' \
-              '<meta charset="utf-8">' \
-              '<meta name="robots" content="noindex, nofollow">' \
-              '<title>QA Aruma — sin build</title>' \
-              '</head>' \
-              '<body>' \
-              '<p>No hay rama <code>qa</code> todavia. El ambiente aparece aqui cuando se reconstruya esa rama sobre main.</p>' \
-              '</body>' \
-              '</html>' \
-              > prod/out/qa/index.html
-          fi
-          find prod/out/qa -type f -name '*.html' -print0 | while IFS= read -r -d '' f; do
-            perl -0pi -e 's#<meta\s+name="robots"\s+content="[^"]*"\s*/?>#<meta name="robots" content="noindex, nofollow" />#gi' "$f"
-            if ! grep -q 'name="robots"' "$f"; then
-              perl -0pi -e 's#<head(\s[^>]*)?>#<head$1>\n    <meta name="robots" content="noindex, nofollow" />#i' "$f"
-            fi
-          done
-          missing=$(find prod/out/qa -type f -name '*.html' -exec grep -L 'noindex, nofollow' {} + || true)
-          if [ -n "$missing" ]; then
-            echo "HTML de QA sin noindex:" >&2
-            echo "$missing" >&2
-            exit 1
-          fi
-          printf 'User-agent: *\nDisallow: /\n' > prod/out/qa/robots.txt
-          if [ -f prod/out/robots.txt ]; then
-            if ! grep -q 'Disallow: /aruma/qa' prod/out/robots.txt; then
-              printf '\nDisallow: /aruma/qa\n' >> prod/out/robots.txt
-            fi
-          else
-            printf 'User-agent: *\nDisallow: /aruma/brand\nDisallow: /aruma/qa\n' > prod/out/robots.txt
-          fi
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./prod/out
+          path: ./out
 
   deploy:
     environment:

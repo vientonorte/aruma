@@ -2,7 +2,7 @@ import { brandConfig } from './brand.config';
 import { toOpeningHoursSpecification } from './business-hours';
 import { isValidBookingUrl } from './brand-storage';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://vientonorte.io/aruma';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://vientonorte.github.io/aruma';
 const SITE_DESCRIPTION =
   'Tatuaje, shibari, fotografía y sesiones dom en un espacio cuidado. Reserva online, con acuerdos claros y protección de tus datos.';
 

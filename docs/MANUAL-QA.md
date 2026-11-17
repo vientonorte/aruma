@@ -1,5 +1,3 @@
-<!-- Ambiente de QA humano (decisión Rö 2026-11-17): https://vientonorte.io/aruma/qa/ — ver docs/PIPELINE.md. Esta checklist no se reemplaza. -->
-
 <!-- Viento Norte Manual QA v1.0.0 · 2026-07-20 · colectivo -->
 
 # Manual QA — aruma
