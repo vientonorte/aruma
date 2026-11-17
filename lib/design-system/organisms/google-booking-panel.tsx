@@ -39,9 +39,10 @@ function buildReservationMailto(
     'Notas / consentimiento / accesibilidad:',
     '',
     '— Enviado desde vientonorte.io/aruma',
-  ].join('\n');
-  const q = new URLSearchParams({ subject, body });
-  return `mailto:${email}?${q.toString()}`;
+  ].join('\r\n');
+  // RFC 6068: espacios como %20, no '+'. URLSearchParams usa '+' y los
+  // clientes de correo lo muestran literal («Hola+Estudio»).
+  return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
 const GOOGLE_BENEFITS = [
