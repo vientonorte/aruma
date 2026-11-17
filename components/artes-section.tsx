@@ -14,7 +14,7 @@ const ARTES = [
     title: "Tatuaje",
     description:
       "Dibujo permanente sobre la piel, con motivos botánicos y tiempo para cuidar el proceso.",
-    price: "Flash desde $15.000",
+    price: "Flash $15.000",
     safety: "Material estéril, un solo uso",
     src: "/img/artes/01-tatuaje.webp",
     alt: "Ilustración de una tatuadora con delantal y guantes aplicando un helecho en un antebrazo, frente a láminas botánicas.",
