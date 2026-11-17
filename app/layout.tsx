@@ -6,22 +6,24 @@ const inter = Inter({ subsets: ["latin"], display: "swap" });
 import { Header, Footer, MotionProvider } from "@/lib/design-system";
 import { BrandConfigProvider } from "@/lib/brand-config-context";
 import { buildLocalBusinessJsonLd, buildWebSiteJsonLd } from "@/lib/json-ld";
-import { brandConfig } from "@/lib/brand.config";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://vientonorte.github.io/aruma";
+const SITE_TITLE = "ĀRŪḾA | Tatuaje, shibari, fotografía y sesiones dom";
 const SITE_DESCRIPTION =
-  "Espacio íntimo y seguro para sesiones fotográficas auténticas. Reserva online con Google Calendar en segundos, con total privacidad y protección de tus datos.";
+  "Tatuaje, shibari, fotografía y sesiones dom en un espacio cuidado. Reserva online con Google Calendar, con acuerdos claros y protección de tus datos.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `ĀRŪḾA v${brandConfig.version} | Estudio fotográfico — Reserva con Google Calendar`,
+    default: SITE_TITLE,
     template: "%s | ĀRŪḾA",
   },
   description: SITE_DESCRIPTION,
   keywords: [
-    "estudio fotográfico",
-    "sesión fotográfica íntima",
+    "tatuaje",
+    "shibari",
+    "fotografía",
+    "sesiones dom",
     "reserva online",
     "Google Calendar",
     "Santiago Chile",
@@ -33,12 +35,12 @@ export const metadata: Metadata = {
     locale: "es_CL",
     url: "/",
     siteName: "ĀRŪḾA",
-    title: "ĀRŪḾA | Estudio fotográfico & espacio seguro",
+    title: SITE_TITLE,
     description: SITE_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: "ĀRŪḾA | Estudio fotográfico & espacio seguro",
+    title: SITE_TITLE,
     description: SITE_DESCRIPTION,
   },
   robots: { index: true, follow: true },
@@ -69,10 +71,10 @@ export default function RootLayout({
         <MotionProvider>
         <Header
           navigation={[
-            { label: "Servicios", href: "#servicios" },
-            { label: "Proceso", href: "#proceso" },
-            { label: "Reservar", href: "#reserva" },
-            { label: "Ubicación", href: "#ubicacion" },
+            { label: "Servicios", href: "/#servicios" },
+            { label: "Proceso", href: "/#proceso" },
+            { label: "Reservar", href: "/#reserva" },
+            { label: "Ubicación", href: "/#ubicacion" },
             { label: "Design System →", href: "/brand" },
           ]}
         />
@@ -82,9 +84,12 @@ export default function RootLayout({
             {
               title: "Servicios",
               items: [
-                { label: "Sesión fotográfica", href: "#servicios" },
-                { label: "Reservar sesión", href: "#reserva" },
-                { label: "Ubicación", href: "#ubicacion" },
+                { label: "Tatuaje", href: "/#tatuaje" },
+                { label: "Shibari", href: "/#shibari" },
+                { label: "Fotografía", href: "/#fotografia" },
+                { label: "Sesiones dom", href: "/#sesiones-dom" },
+                { label: "Reservar sesión", href: "/#reserva" },
+                { label: "Ubicación", href: "/#ubicacion" },
               ],
             },
             {

@@ -4,7 +4,7 @@ import { Heading, Text } from "@/lib/design-system";
 export const metadata: Metadata = {
   title: "Términos de uso",
   description:
-    "Condiciones de reserva, cancelación y uso del sitio del estudio fotográfico ĀRŪḾA.",
+    "Condiciones de reserva, cancelación y uso del sitio de ĀRŪḾA: tatuaje, shibari, fotografía y sesiones dom.",
 };
 
 const sections = [
@@ -37,7 +37,8 @@ export default function TerminosPage() {
         Términos de uso
       </Heading>
       <Text muted className="mt-4">
-        Última actualización: junio de 2026
+        Última actualización: junio de 2026. Estas condiciones cubren las cuatro artes del estudio:
+        tatuaje, shibari, fotografía y sesiones dom.
       </Text>
       <div className="mt-12 space-y-10">
         {sections.map((section) => (
