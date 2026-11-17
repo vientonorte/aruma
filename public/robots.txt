@@ -1,6 +1,5 @@
-# Control secundario — el noindex primario está en app/brand/layout.tsx.
-# Los crawlers solo leen https://vientonorte.io/robots.txt (hub). Este
-# archivo en /aruma/robots.txt no rige el rastreo. No se añade Disallow
-# de /aruma/qa al hub. El QA se protege con noindex, nofollow.
+# Control secundario — el noindex primario está en app/brand/layout.tsx
+# y, en QA, en el build de /aruma/qa/ (meta robots + robots.txt propio).
 User-agent: *
 Disallow: /aruma/brand
+Disallow: /aruma/qa

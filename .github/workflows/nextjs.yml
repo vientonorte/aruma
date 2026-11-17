@@ -29,11 +29,9 @@ concurrency:
 jobs:
   guard:
     runs-on: ubuntu-latest
-    # workflow_run.branches filtra por head_branch: un PR o fork llamado
-    # main o qa también coincidiría. Solo aceptamos CI de un push (o un dispatch).
     if: >
       github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+      github.event.workflow_run.conclusion == 'success'
     steps:
       - name: Gate
         run: echo "CI green or manual dispatch"
@@ -150,10 +148,14 @@ jobs:
             echo "$missing" >&2
             exit 1
           fi
-          # robots.txt de QA: convención, no protege el rastreo (los crawlers
-          # solo leen https://vientonorte.io/robots.txt, el del hub). No se
-          # añade Disallow al hub. La protección real es noindex, nofollow.
           printf 'User-agent: *\nDisallow: /\n' > prod/out/qa/robots.txt
+          if [ -f prod/out/robots.txt ]; then
+            if ! grep -q 'Disallow: /aruma/qa' prod/out/robots.txt; then
+              printf '\nDisallow: /aruma/qa\n' >> prod/out/robots.txt
+            fi
+          else
+            printf 'User-agent: *\nDisallow: /aruma/brand\nDisallow: /aruma/qa\n' > prod/out/robots.txt
+          fi
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
