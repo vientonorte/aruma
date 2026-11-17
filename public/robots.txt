@@ -1,3 +1,5 @@
 # Control secundario — el noindex primario está en app/brand/layout.tsx
+# y, en QA, en el build de /aruma/qa/ (meta robots + robots.txt propio).
 User-agent: *
 Disallow: /aruma/brand
+Disallow: /aruma/qa
