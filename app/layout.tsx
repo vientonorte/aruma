@@ -6,8 +6,9 @@ const inter = Inter({ subsets: ["latin"], display: "swap" });
 import { Header, Footer, MotionProvider } from "@/lib/design-system";
 import { BrandConfigProvider } from "@/lib/brand-config-context";
 import { buildLocalBusinessJsonLd, buildWebSiteJsonLd } from "@/lib/json-ld";
+import { IS_QA_BUILD } from "@/lib/site-path";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://vientonorte.github.io/aruma";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://vientonorte.io/aruma";
 const SITE_TITLE = "ĀRŪḾA | Tatuaje, shibari, fotografía y sesiones dom";
 const SITE_DESCRIPTION =
   "Tatuaje, shibari, fotografía y sesiones dom en un espacio cuidado. Reserva online con Google Calendar, con acuerdos claros y protección de tus datos.";
@@ -43,7 +44,7 @@ export const metadata: Metadata = {
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
   },
-  robots: { index: true, follow: true },
+  robots: { index: !IS_QA_BUILD, follow: !IS_QA_BUILD },
   alternates: { canonical: "/" },
 };
 
@@ -57,10 +58,12 @@ export default function RootLayout({
   return (
     <html lang="es" className="h-full scroll-smooth antialiased">
       <body className={`${inter.className} flex min-h-full flex-col bg-[#0A0A0A] text-[#F5F5F7]`}>
+        {!IS_QA_BUILD && (
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
+        )}
         <a
           href="#contenido"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-[#F5F0E8] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-black"
