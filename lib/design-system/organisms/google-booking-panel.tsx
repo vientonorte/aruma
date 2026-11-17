@@ -20,6 +20,9 @@ import {
 import type { SessionType } from '@/lib/brand.config';
 import { withBasePath } from '@/lib/site-path';
 
+/** Notas de puesta en marcha. El build público (NODE_ENV=production) no las pinta. */
+const SHOW_STUDIO_SETUP = process.env.NODE_ENV !== 'production';
+
 /** Mailto de respaldo — no expone inbox privado; solo canal público. */
 function buildReservationMailto(
   email: string,
@@ -136,7 +139,7 @@ export function GoogleBookingPanel() {
         </Text>
       </div>
 
-      {!bookingReady && (
+      {!bookingReady && SHOW_STUDIO_SETUP && (
         <div className="mt-6 sm:mt-8">
           <StatusMessage
             type="warning"
@@ -250,7 +253,7 @@ export function GoogleBookingPanel() {
           >
             Escribir para reservar
           </ButtonLink>
-        ) : (
+        ) : SHOW_STUDIO_SETUP ? (
           <div className="text-center">
             <p className="text-sm text-[#86868B]">
               La agenda de Google aún no está activa.
@@ -262,7 +265,7 @@ export function GoogleBookingPanel() {
               Configurar en /brand → Servicios y agenda
             </a>
           </div>
-        )}
+        ) : null}
         <Text size="sm" muted>
           {bookingReady
             ? `Se abre en una pestaña nueva · ${config.businessHours}`
