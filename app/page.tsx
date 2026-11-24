@@ -9,6 +9,7 @@ import {
   GoogleFeaturesStrip,
 } from "@/lib/design-system";
 import { ArtesSection } from "@/components/artes-section";
+import { FlashGhibliTechSection } from "@/components/flash-ghibli-tech-section";
 
 const PROCESS_STEPS = [
   {
@@ -44,6 +45,8 @@ export default function Home() {
       <GoogleFeaturesStrip />
 
       <ArtesSection />
+
+      <FlashGhibliTechSection />
 
       <section id="proceso" aria-labelledby="proceso-heading">
         <div className="mb-8 text-center">
